@@ -1,41 +1,125 @@
-name: Deploy Resume App
+name: Build and Deploy to Azure
 
 on:
   push:
-    branches: [ main ]  # This triggers the script every time you push to main
+    branches:
+      - main  # Trigger only on pushes to the main branch
+
+env:
+  REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
+  IMAGE_NAME: jobapp
+  APP_SERVICE_NAME: MimisWebApp
+  RESOURCE_GROUP: MimisAppRG
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Execute Remote Deployment
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
         with:
-          host: ${{ secrets.VM_IP }}
-          username: ${{ secrets.VM_USER }}
-          password: ${{ secrets.VM_PASSWORD }}
-          script: |
-            # 1. Create a unique folder name using a timestamp
-            NEW_REL=~/releases/$(date +%Y%m%d%H%M%S)
-            mkdir -p $NEW_REL
-            
-            # 2. Clone the latest code into that new folder
-            git clone https://github.com/${{ github.repository }}.git $NEW_REL
-            
-            # 3. Set up the virtual environment & install requirements
-            cd $NEW_REL
-            python3 -m venv venv
-            source venv/bin/activate
-            pip install -r requirements.txt
-            
-            # 4. Inject the Gemini Key into a .env file for the app to read
-            echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
-            
-            # 5. THE ATOMIC SWAP: Point the 'app_current' link to the new folder
-            ln -sfn $NEW_REL ~/app_current
-            
-            # 6. Restart the service to pick up the changes
-            sudo systemctl restart jobapp
+          login-server: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build Docker Image
+        id: docker_build
+        run: |
+          echo "🔨 Building Docker image with tags: ${{ github.sha }}, latest"
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+                       -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest .
+          if [ $? -eq 0 ]; then
+            echo "✅ Docker build successful"
+            echo "build_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Docker build failed"
+            echo "build_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Push Docker Image to ACR
+        id: docker_push
+        if: steps.docker_build.outputs.build_success == 'true'
+        run: |
+          echo "📤 Pushing image to ACR: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          if [ $? -eq 0 ]; then
+            echo "✅ Docker push successful"
+            echo "push_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Docker push failed"
+            echo "push_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Azure Login
+        id: azure_login
+        if: steps.docker_push.outputs.push_success == 'true'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure App Service
+        id: deploy
+        if: steps.azure_login.outcome == 'success'
+        run: |
+          echo "🚀 Deploying to Azure App Service: ${{ env.APP_SERVICE_NAME }}"
+          az webapp config container set \
+            --name ${{ env.APP_SERVICE_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --docker-custom-image-name ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --docker-registry-server-url https://${{ env.REGISTRY }} \
+            --docker-registry-server-username ${{ secrets.ACR_USERNAME }} \
+            --docker-registry-server-password ${{ secrets.ACR_PASSWORD }}
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ Image deployment to App Service successful"
+            echo "deploy_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Image deployment to App Service failed"
+            echo "deploy_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Restart App Service
+        if: steps.deploy.outputs.deploy_success == 'true'
+        run: |
+          echo "🔄 Restarting App Service to apply new image"
+          az webapp restart --name ${{ env.APP_SERVICE_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
+          echo "✅ App Service restarted with new image"
+
+      - name: Deployment Success Summary
+        if: success()
+        run: |
+          echo "═══════════════════════════════════════════════════════════"
+          echo "✅ DEPLOYMENT SUCCESSFUL"
+          echo "═══════════════════════════════════════════════════════════"
+          echo "App Service: ${{ env.APP_SERVICE_NAME }}"
+          echo "Resource Group: ${{ env.RESOURCE_GROUP }}"
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "═══════════════════════════════════════════════════════════"
+
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          echo "═══════════════════════════════════════════════════════════"
+          echo "❌ DEPLOYMENT FAILED - ROLLING BACK"
+          echo "═══════════════════════════════════════════════════════════"
+          echo "Rolling back to previous stable image (latest tag)"
+          az webapp config container set \
+            --name ${{ env.APP_SERVICE_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --docker-custom-image-name ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            --docker-registry-server-url https://${{ env.REGISTRY }} \
+            --docker-registry-server-username ${{ secrets.ACR_USERNAME }} \
+            --docker-registry-server-password ${{ secrets.ACR_PASSWORD }}
+          az webapp restart --name ${{ env.APP_SERVICE_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
+          echo "✅ Rolled back to previous image"
+          echo "Check logs above for failure details"
+          echo "═══════════════════════════════════════════════════════════"
+          exit 1
