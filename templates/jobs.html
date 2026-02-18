@@ -183,6 +183,25 @@
         border-color: #999;
     }
 
+    .btn-delete {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex: 1;
+        text-align: center;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+        color: white;
+        border-color: #dc2626;
+    }
+
     .demo-badge {
         display: inline-block;
         background: #fff3cd;
@@ -192,6 +211,45 @@
         font-size: 11px;
         font-weight: 500;
         margin-bottom: 15px;
+    }
+
+    .applied-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    .applied-indicator.applied {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .applied-indicator.not-applied {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .job-link-preview {
+        font-size: 12px;
+        color: #667eea;
+        margin-bottom: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .job-link-preview a {
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    .job-link-preview a:hover {
+        text-decoration: underline;
     }
 {% endblock %}
 
@@ -218,6 +276,12 @@
                 <div class="job-title">{{ job.title }}</div>
                 <div class="job-company">{{ job.company }}</div>
                 
+                {% if user_jobs %}
+                <div class="applied-indicator {% if job.applied %}applied{% else %}not-applied{% endif %}">
+                    {% if job.applied %}✓ Applied{% else %}○ Not Applied{% endif %}
+                </div>
+                {% endif %}
+                
                 <div class="job-meta">
                     <div class="meta-item">
                         <span class="meta-label">📍 Location:</span>
@@ -236,6 +300,12 @@
                 <div class="job-description">
                     {{ job.description }}
                 </div>
+
+                {% if job.link %}
+                <div class="job-link-preview">
+                    🔗 <a href="{{ job.link }}" target="_blank" rel="noopener noreferrer">{{ job.link[:50] }}{% if job.link|length > 50 %}...{% endif %}</a>
+                </div>
+                {% endif %}
 
                 <div class="job-actions">
                     <a href="/job/{{ job.id }}" class="btn-secondary">View Details</a>
