@@ -2,7 +2,15 @@ import sqlite3
 import os
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'jobs.db')
+# Use /home for Azure App Service persistent storage, fallback to local for dev
+if os.path.exists('/home'):
+    # Azure App Service - use persistent /home mount
+    DB_DIR = '/home/data'
+    os.makedirs(DB_DIR, exist_ok=True)
+    DB_PATH = os.path.join(DB_DIR, 'jobs.db')
+else:
+    # Local development
+    DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'jobs.db')
 
 # Demo job data - hardcoded for all users
 DEMO_JOBS = [
