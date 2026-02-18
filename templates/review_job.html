@@ -71,6 +71,18 @@
 
         <div class="form-row">
             <div class="form-group full-width">
+                <label for="link">Job Posting URL</label>
+                <input 
+                    type="url" 
+                    id="link" 
+                    name="link"
+                    class="form-input"
+                    placeholder="e.g., https://company.com/jobs/12345">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group full-width">
                 <label for="description">Job Description *</label>
                 <textarea 
                     id="description" 
@@ -283,6 +295,7 @@ window.addEventListener('load', () => {
     document.getElementById('pay').value = job.pay || '';
     document.getElementById('skills').value = job.skills || '';
     document.getElementById('description').value = job.description || '';
+    document.getElementById('link').value = job.link || '';
     
     console.log('Loaded job data:', job);
 });
@@ -297,7 +310,8 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         location: document.getElementById('location').value.trim(),
         pay: document.getElementById('pay').value.trim(),
         skills: document.getElementById('skills').value.trim() || 'unknown',
-        description: document.getElementById('description').value.trim()
+        description: document.getElementById('description').value.trim(),
+        link: document.getElementById('link').value.trim()
     };
     
     // Validate required fields

@@ -270,7 +270,9 @@ def ensure_columns_exist():
         'user_id': 'TEXT',
         'created_at': 'TIMESTAMP',
         'updated_at': 'TIMESTAMP',
-        'skills': "TEXT DEFAULT 'unknown'"
+        'skills': "TEXT DEFAULT 'unknown'",
+        'link': 'TEXT',
+        'applied': 'INTEGER DEFAULT 0'
     }
     
     # Add missing columns
@@ -285,13 +287,18 @@ def ensure_columns_exist():
     conn.commit()
     conn.close()
 
-def get_all_jobs():
-    """Retrieve all jobs from database."""
+def get_all_jobs(include_demo=False):
+    """Retrieve all jobs from database. Excludes demo data by default."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     
-    cursor.execute('SELECT * FROM jobs ORDER BY posting_date DESC')
+    if include_demo:
+        cursor.execute('SELECT * FROM jobs ORDER BY posting_date DESC')
+    else:
+        # Exclude demo jobs (those with NULL user_id)
+        cursor.execute('SELECT * FROM jobs WHERE user_id IS NOT NULL ORDER BY posting_date DESC')
+    
     jobs = [dict(row) for row in cursor.fetchall()]
     
     conn.close()
@@ -321,7 +328,7 @@ def get_user_jobs(user_id):
     conn.close()
     return jobs
 
-def save_job(title, company, location, pay, description, user_id, skills='unknown', posting_date=None):
+def save_job(title, company, location, pay, description, user_id, skills='unknown', posting_date=None, link=None):
     """Save a new job to the database."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -336,9 +343,9 @@ def save_job(title, company, location, pay, description, user_id, skills='unknow
     now = datetime.now().isoformat()
     
     cursor.execute('''
-        INSERT INTO jobs (title, company, location, pay, posting_date, description, skills, user_id, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (title, company, location, pay, posting_date, description, skills, user_id, now, now))
+        INSERT INTO jobs (title, company, location, pay, posting_date, description, skills, user_id, link, applied, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+    ''', (title, company, location, pay, posting_date, description, skills, user_id, link, now, now))
     
     conn.commit()
     job_id = cursor.lastrowid
@@ -361,3 +368,39 @@ def update_job(job_id, title, company, location, pay, description):
     
     conn.commit()
     conn.close()
+
+def delete_job(job_id, user_id):
+    """Delete a job. Only allows deletion if job belongs to the user."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Only delete if the job belongs to this user (prevents deleting demo jobs or other users' jobs)
+    cursor.execute('DELETE FROM jobs WHERE id = ? AND user_id = ?', (job_id, user_id))
+    
+    rows_deleted = cursor.rowcount
+    conn.commit()
+    conn.close()
+    
+    return rows_deleted > 0
+
+def toggle_applied(job_id, user_id):
+    """Toggle the applied status of a job. Only allows if job belongs to the user."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Get current applied status
+    cursor.execute('SELECT applied FROM jobs WHERE id = ? AND user_id = ?', (job_id, user_id))
+    row = cursor.fetchone()
+    
+    if row is None:
+        conn.close()
+        return None
+    
+    # Toggle the status
+    new_status = 0 if row[0] else 1
+    cursor.execute('UPDATE jobs SET applied = ? WHERE id = ? AND user_id = ?', (new_status, job_id, user_id))
+    
+    conn.commit()
+    conn.close()
+    
+    return new_status

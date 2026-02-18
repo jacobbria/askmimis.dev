@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} - {{ job.company }}{% endblock %}
+
+{% block custom_styles %}
+    main {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #667eea;
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 20px;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: #764ba2;
+    }
+
+    .job-detail-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        animation: popup 0.5s ease-out;
+    }
+
+    @keyframes popup {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .job-header {
+        margin-bottom: 25px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 20px;
+    }
+
+    .job-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .job-company {
+        font-size: 18px;
+        color: #667eea;
+        font-weight: 500;
+    }
+
+    .applied-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #d1fae5;
+        color: #059669;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        margin-top: 12px;
+    }
+
+    .applied-badge.not-applied {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .job-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .meta-card {
+        background: #f9fafb;
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+
+    .meta-card-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .meta-card-value {
+        font-size: 16px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .job-link {
+        margin-bottom: 25px;
+    }
+
+    .job-link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #667eea;
+        text-decoration: none;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .job-link a:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        transform: translateX(4px);
+    }
+
+    .job-section {
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 12px;
+    }
+
+    .job-description {
+        font-size: 15px;
+        color: #555;
+        line-height: 1.7;
+        background: #f9fafb;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        white-space: pre-wrap;
+    }
+
+    .job-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .skill-tag {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .job-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 2px solid #f0f0f0;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background: #e0e0e0;
+    }
+
+    .btn-success {
+        background: #10b981;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #059669;
+    }
+
+    .btn-success.applied {
+        background: #d1fae5;
+        color: #059669;
+        border: 2px solid #10b981;
+    }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+        color: white;
+        border-color: #dc2626;
+    }
+
+    .posting-date {
+        font-size: 13px;
+        color: #9ca3af;
+        margin-top: 8px;
+    }
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="/my-jobs" class="back-link">← Back to My Jobs</a>
+
+    <div class="job-detail-card">
+        <div class="job-header">
+            <h1 class="job-title">{{ job.title }}</h1>
+            <div class="job-company">{{ job.company }}</div>
+            {% if job.applied %}
+            <div class="applied-badge">✓ Applied</div>
+            {% else %}
+            <div class="applied-badge not-applied">○ Not Applied</div>
+            {% endif %}
+            <div class="posting-date">📅 Posted: {{ job.posting_date }}</div>
+        </div>
+
+        <div class="job-meta-grid">
+            <div class="meta-card">
+                <div class="meta-card-label">Location</div>
+                <div class="meta-card-value">📍 {{ job.location }}</div>
+            </div>
+            <div class="meta-card">
+                <div class="meta-card-label">Salary</div>
+                <div class="meta-card-value">💰 {{ job.pay or 'Not specified' }}</div>
+            </div>
+        </div>
+
+        {% if job.link %}
+        <div class="job-link">
+            <a href="{{ job.link }}" target="_blank" rel="noopener noreferrer">
+                🔗 View Original Job Posting →
+            </a>
+        </div>
+        {% endif %}
+
+        {% if job.skills and job.skills != 'unknown' %}
+        <div class="job-section">
+            <div class="section-title">Skills & Keywords</div>
+            <div class="job-skills">
+                {% for skill in job.skills.split(',') %}
+                <span class="skill-tag">{{ skill.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="job-section">
+            <div class="section-title">Description</div>
+            <div class="job-description">{{ job.description }}</div>
+        </div>
+
+        <div class="job-actions">
+            {% if job.link %}
+            <a href="{{ job.link }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                🔗 Apply Now
+            </a>
+            {% endif %}
+            
+            {% if is_owner %}
+            <button 
+                id="toggleAppliedBtn"
+                class="btn btn-success {% if job.applied %}applied{% endif %}" 
+                onclick="toggleApplied({{ job.id }})">
+                {% if job.applied %}✓ Applied{% else %}Mark as Applied{% endif %}
+            </button>
+            <button class="btn btn-delete" onclick="deleteJob({{ job.id }}, '{{ job.title | e }}')">
+                🗑️ Delete Job
+            </button>
+            {% endif %}
+            
+            <a href="/my-jobs" class="btn btn-secondary">Back to Jobs</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleApplied(jobId) {
+    const btn = document.getElementById('toggleAppliedBtn');
+    btn.disabled = true;
+    
+    fetch(`/jobs/toggle-applied/${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.applied) {
+                btn.innerHTML = '✓ Applied';
+                btn.classList.add('applied');
+                // Update badge
+                const badge = document.querySelector('.applied-badge');
+                if (badge) {
+                    badge.innerHTML = '✓ Applied';
+                    badge.classList.remove('not-applied');
+                }
+            } else {
+                btn.innerHTML = 'Mark as Applied';
+                btn.classList.remove('applied');
+                // Update badge
+                const badge = document.querySelector('.applied-badge');
+                if (badge) {
+                    badge.innerHTML = '○ Not Applied';
+                    badge.classList.add('not-applied');
+                }
+            }
+        } else {
+            alert(data.message || 'Failed to update status');
+        }
+        btn.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating status');
+        btn.disabled = false;
+    });
+}
+
+function deleteJob(jobId, jobTitle) {
+    if (!confirm(`Are you sure you want to delete "${jobTitle}"? This action cannot be undone.`)) {
+        return;
+    }
+    
+    fetch(`/jobs/delete/${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Job deleted successfully');
+            window.location.href = '/my-jobs';
+        } else {
+            alert(data.message || 'Failed to delete job');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the job');
+    });
+}
+</script>
+{% endblock %}

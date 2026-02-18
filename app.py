@@ -43,12 +43,13 @@ def index():
 
 @app.route('/demo')
 def demo():
-    """Display all demo job data."""
+    """Display all job data for the logged in user."""
     logger.info("Demo page accessed")
+    is_authenticated = auth.is_authenticated(session)
     try:
         jobs = db.get_all_jobs()
         logger.info(f"Successfully retrieved {len(jobs)} jobs from database")
-        return render_template('analysis_page.html', jobs=jobs, is_demo=True)
+        return render_template('analysis_page.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=is_authenticated)
     except Exception as e:
         logger.error(f"Error loading demo data: {str(e)}", exc_info=True)
         return render_template('error.html', message='Error loading job data'), 500
@@ -211,7 +212,8 @@ def save_job():
             pay=data.get('pay', '').strip() or None,
             description=data['description'].strip(),
             skills=data.get('skills', 'unknown').strip() or 'unknown',
-            user_id=user_id
+            user_id=user_id,
+            link=data.get('link', '').strip() or None
         )
         
         logger.info(f"✓ Job saved successfully with ID: {job_id}")
@@ -251,16 +253,69 @@ def my_jobs():
 def job_detail(job_id):
     """Display details for a specific job."""
     logger.info(f"Job detail page accessed for job ID: {job_id}")
+    is_authenticated = auth.is_authenticated(session)
+    user_id = session.get('user_id') if is_authenticated else None
     try:
         job = db.get_job_by_id(job_id)
         if not job:
             logger.warning(f"Job not found for ID: {job_id}")
             return render_template('error.html', message='Job not found'), 404
         logger.info(f"Successfully retrieved job: {job.get('title')}")
-        return render_template('job_detail.html', job=job)
+        is_owner = is_authenticated and job.get('user_id') == user_id
+        return render_template('job_detail.html', job=job, is_authenticated=is_authenticated, is_owner=is_owner)
     except Exception as e:
         logger.error(f"Error retrieving job {job_id}: {str(e)}", exc_info=True)
         return render_template('error.html', message='Error loading job details'), 500
+
+@app.route('/jobs/delete/<int:job_id>', methods=['POST'])
+def delete_job(job_id):
+    """Delete a job entry. Only the owner can delete their job."""
+    is_authenticated = auth.is_authenticated(session)
+    if not is_authenticated:
+        logger.warning("Unauthenticated user tried to delete a job")
+        return jsonify({'error': 'unauthorized', 'message': 'You must be logged in'}), 401
+    
+    try:
+        user_id = session.get('user_id')
+        logger.info(f"User {user_id} attempting to delete job {job_id}")
+        
+        success = db.delete_job(job_id, user_id)
+        
+        if success:
+            logger.info(f"Job {job_id} deleted successfully by user {user_id}")
+            return jsonify({'success': True, 'message': 'Job deleted successfully'})
+        else:
+            logger.warning(f"Job {job_id} not found or not owned by user {user_id}")
+            return jsonify({'error': 'not_found', 'message': 'Job not found or you do not have permission to delete it'}), 404
+            
+    except Exception as e:
+        logger.error(f"Error deleting job {job_id}: {str(e)}", exc_info=True)
+        return jsonify({'error': 'delete_error', 'message': 'Failed to delete job'}), 500
+
+@app.route('/jobs/toggle-applied/<int:job_id>', methods=['POST'])
+def toggle_applied(job_id):
+    """Toggle the applied status of a job."""
+    is_authenticated = auth.is_authenticated(session)
+    if not is_authenticated:
+        logger.warning("Unauthenticated user tried to toggle applied status")
+        return jsonify({'error': 'unauthorized', 'message': 'You must be logged in'}), 401
+    
+    try:
+        user_id = session.get('user_id')
+        logger.info(f"User {user_id} toggling applied status for job {job_id}")
+        
+        new_status = db.toggle_applied(job_id, user_id)
+        
+        if new_status is not None:
+            logger.info(f"Job {job_id} applied status toggled to {new_status} by user {user_id}")
+            return jsonify({'success': True, 'applied': new_status})
+        else:
+            logger.warning(f"Job {job_id} not found or not owned by user {user_id}")
+            return jsonify({'error': 'not_found', 'message': 'Job not found or you do not have permission'}), 404
+            
+    except Exception as e:
+        logger.error(f"Error toggling applied status for job {job_id}: {str(e)}", exc_info=True)
+        return jsonify({'error': 'toggle_error', 'message': 'Failed to update status'}), 500
 
 @app.route('/health')
 def health():
