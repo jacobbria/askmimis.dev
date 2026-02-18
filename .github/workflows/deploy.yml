@@ -1,18 +1,16 @@
-name: Build and Deploy to Azure
+name: Build and Push to ACR
 
 on:
   push:
     branches:
-      - main  # Trigger only on pushes to the main branch
+      - main
 
 env:
   REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
   IMAGE_NAME: jobapp
-  APP_SERVICE_NAME: MimisWebApp
-  RESOURCE_GROUP: MimisAppRG
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -25,101 +23,22 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build Docker Image
-        id: docker_build
+      - name: Build and Push Docker Image
         run: |
-          echo "🔨 Building Docker image with tags: ${{ github.sha }}, latest"
+          echo "Building Docker image..."
           docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
                        -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest .
-          if [ $? -eq 0 ]; then
-            echo "✅ Docker build successful"
-            echo "build_success=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Docker build failed"
-            echo "build_success=false" >> $GITHUB_OUTPUT
-            exit 1
-          fi
-
-      - name: Push Docker Image to ACR
-        id: docker_push
-        if: steps.docker_build.outputs.build_success == 'true'
-        run: |
-          echo "📤 Pushing image to ACR: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          
+          echo "Pushing to ACR..."
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          if [ $? -eq 0 ]; then
-            echo "✅ Docker push successful"
-            echo "push_success=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Docker push failed"
-            echo "push_success=false" >> $GITHUB_OUTPUT
-            exit 1
-          fi
 
-      - name: Azure Login
-        id: azure_login
-        if: steps.docker_push.outputs.push_success == 'true'
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy to Azure App Service
-        id: deploy
-        if: steps.azure_login.outcome == 'success'
-        run: |
-          echo "🚀 Deploying to Azure App Service: ${{ env.APP_SERVICE_NAME }}"
-          az webapp config container set \
-            --name ${{ env.APP_SERVICE_NAME }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --docker-custom-image-name ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            --docker-registry-server-url https://${{ env.REGISTRY }} \
-            --docker-registry-server-username ${{ secrets.ACR_USERNAME }} \
-            --docker-registry-server-password ${{ secrets.ACR_PASSWORD }}
-          
-          if [ $? -eq 0 ]; then
-            echo "✅ Image deployment to App Service successful"
-            echo "deploy_success=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Image deployment to App Service failed"
-            echo "deploy_success=false" >> $GITHUB_OUTPUT
-            exit 1
-          fi
-
-      - name: Restart App Service
-        if: steps.deploy.outputs.deploy_success == 'true'
-        run: |
-          echo "🔄 Restarting App Service to apply new image"
-          az webapp restart --name ${{ env.APP_SERVICE_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
-          echo "✅ App Service restarted with new image"
-
-      - name: Deployment Success Summary
-        if: success()
+      - name: Summary
         run: |
           echo "═══════════════════════════════════════════════════════════"
-          echo "✅ DEPLOYMENT SUCCESSFUL"
-          echo "═══════════════════════════════════════════════════════════"
-          echo "App Service: ${{ env.APP_SERVICE_NAME }}"
-          echo "Resource Group: ${{ env.RESOURCE_GROUP }}"
+          echo "✅ IMAGE PUSHED TO ACR"
           echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
-          echo "Commit: ${{ github.sha }}"
+          echo ""
+          echo "To deploy manually, run:"
+          echo "az webapp config container set --name MimisWebApp --resource-group MimisAppRG --docker-custom-image-name ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           echo "═══════════════════════════════════════════════════════════"
-
-      - name: Rollback on Failure
-        if: failure()
-        run: |
-          echo "═══════════════════════════════════════════════════════════"
-          echo "❌ DEPLOYMENT FAILED - ROLLING BACK"
-          echo "═══════════════════════════════════════════════════════════"
-          echo "Rolling back to previous stable image (latest tag)"
-          az webapp config container set \
-            --name ${{ env.APP_SERVICE_NAME }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --docker-custom-image-name ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            --docker-registry-server-url https://${{ env.REGISTRY }} \
-            --docker-registry-server-username ${{ secrets.ACR_USERNAME }} \
-            --docker-registry-server-password ${{ secrets.ACR_PASSWORD }}
-          az webapp restart --name ${{ env.APP_SERVICE_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
-          echo "✅ Rolled back to previous image"
-          echo "Check logs above for failure details"
-          echo "═══════════════════════════════════════════════════════════"
-          exit 1
