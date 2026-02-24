@@ -41,17 +41,23 @@ def index():
     is_authenticated = auth.is_authenticated(session)
     return render_template('index.html', is_authenticated=is_authenticated)
 
-@app.route('/demo')
-def demo():
-    """Display all job data for the logged in user."""
-    logger.info("Demo page accessed")
+@app.route('/jobs')
+def jobs():
+    """Display jobs - user's own jobs if authenticated, demo jobs if not."""
+    logger.info("Jobs page accessed")
     is_authenticated = auth.is_authenticated(session)
     try:
-        jobs = db.get_all_jobs()
-        logger.info(f"Successfully retrieved {len(jobs)} jobs from database")
-        return render_template('analysis_page.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=is_authenticated)
+        if is_authenticated:
+            user_id = session.get('user_id')
+            jobs = db.get_user_jobs(user_id)
+            logger.info(f"Retrieved {len(jobs)} jobs for user: {user_id}")
+            return render_template('jobs.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=True)
+        else:
+            jobs = db.get_demo_jobs()
+            logger.info(f"Retrieved {len(jobs)} demo jobs for unauthenticated user")
+            return render_template('jobs.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=False)
     except Exception as e:
-        logger.error(f"Error loading demo data: {str(e)}", exc_info=True)
+        logger.error(f"Error loading jobs: {str(e)}", exc_info=True)
         return render_template('error.html', message='Error loading job data'), 500
 
 @app.route('/api/analyze', methods=['POST'])
@@ -226,28 +232,6 @@ def save_job():
     except Exception as e:
         logger.error(f"Error saving job: {str(e)}", exc_info=True)
         return jsonify({'error': 'save_error', 'message': 'Failed to save job'}), 500
-
-@app.route('/my-jobs')
-def my_jobs():
-    """Display all jobs created by the authenticated user."""
-    is_authenticated = auth.is_authenticated(session)
-    if not is_authenticated:
-        logger.warning("Unauthenticated user tried to access my-jobs page")
-        return redirect(url_for('index'))
-    
-    try:
-        user_id = session.get('user_id')
-        logger.info(f"My jobs page accessed by user: {user_id}")
-        
-        # Get user's jobs from database
-        jobs = db.get_user_jobs(user_id)
-        logger.info(f"Retrieved {len(jobs)} jobs for user: {user_id}")
-        
-        return render_template('jobs.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=True)
-        
-    except Exception as e:
-        logger.error(f"Error loading user jobs: {str(e)}", exc_info=True)
-        return render_template('error.html', message='Error loading your jobs'), 500
 
 @app.route('/job/<int:job_id>')
 def job_detail(job_id):

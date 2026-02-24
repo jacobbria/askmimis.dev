@@ -253,7 +253,7 @@
 
 {% block content %}
 <div class="container">
-    <a href="/my-jobs" class="back-link">← Back to My Jobs</a>
+    <a href="/jobs" class="back-link">← Back to Jobs</a>
 
     <div class="job-detail-card">
         <div class="job-header">
@@ -321,7 +321,7 @@
             </button>
             {% endif %}
             
-            <a href="/my-jobs" class="btn btn-secondary">Back to Jobs</a>
+            <a href="/jobs" class="btn btn-secondary">Back to Jobs</a>
         </div>
     </div>
 </div>
@@ -386,7 +386,7 @@ function deleteJob(jobId, jobTitle) {
     .then(data => {
         if (data.success) {
             alert('Job deleted successfully');
-            window.location.href = '/my-jobs';
+            window.location.href = '/jobs';
         } else {
             alert(data.message || 'Failed to delete job');
         }
