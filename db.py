@@ -304,6 +304,18 @@ def get_all_jobs(include_demo=False):
     conn.close()
     return jobs
 
+def get_demo_jobs():
+    """Retrieve only demo jobs (those with NULL user_id)."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute('SELECT * FROM jobs WHERE user_id IS NULL ORDER BY posting_date DESC')
+    jobs = [dict(row) for row in cursor.fetchall()]
+    
+    conn.close()
+    return jobs
+
 def get_job_by_id(job_id):
     """Retrieve a specific job by ID."""
     conn = sqlite3.connect(DB_PATH)

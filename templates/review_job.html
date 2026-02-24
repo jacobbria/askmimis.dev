@@ -103,7 +103,7 @@
                 </span>
             </button>
             <button type="button" class="btn btn-secondary" onclick="goBack()">Back to Edit</button>
-            <a href="/demo" class="btn btn-secondary">Query Data</a>
+            <a href="/jobs" class="btn btn-secondary">View Jobs</a>
         </div>
     </form>
 
@@ -347,7 +347,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         showMessage('Job posted successfully! Redirecting...', true);
         
         setTimeout(() => {
-            window.location.href = '/my-jobs';
+            window.location.href = '/jobs';
         }, 1500);
         
     } catch (error) {
