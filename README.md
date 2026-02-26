@@ -1,6 +1,11 @@
-# Resume Webapp - Azure Edition
+# AskMimis.dev - AI Analysis Web App
 
-A lightweight Flask web application serving demo job posting data, deployed on Azure with Nginx reverse proxy.
+A lightweight, cost-effective Flask web application for analysing job postings. Deployed on Azure container, Nginx reverse proxy, Gunicorn app server, and SQLite Database (see [stack](#-tech-stack))
+
+## 📁 Directory
+
+- [Management/Config](Management/Config)
+- [Documentation](AZURE_DEPLOYMENT.md)
 
 ## 🎯 Features
 
@@ -246,10 +251,7 @@ kill -9 <PID>
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push and create a Pull Request
+Not an open source project - I appreciate all help, comments, or tips though!
 
 ## 📄 License
 
