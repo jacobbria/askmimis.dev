@@ -5,6 +5,19 @@
 - **Health Check**: Support for Azure Load Balancer health probes
 - **Production Ready**: Uses Gunicorn + Supervisor + Nginx
 
+### CI/CD Pipeline
+
+```mermaid
+flowchart TB
+    A[IDE: git push] --> B[PR Review & Approval]
+    B --> C[Merge to main]
+    C --> D[GitHub Actions Trigger]
+    D --> E[Build Docker Image]
+    E --> F[Push to ACR :latest]
+    F --> G[ACR Webhook]
+    G --> H[Azure App Service Pulls :latest]
+```
+
 ---
 
 ## 🏗️ Architecture
