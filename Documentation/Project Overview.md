@@ -1,6 +1,11 @@
 <h1 align="center">Project Overview</h1>
 
+## Logical Architecture
+
+<img width="1263" height="2809" alt="Resume-WebApp-Diagram" src="https://github.com/user-attachments/assets/df8eab72-1b8e-4338-a7ef-460554fcc65b" />
+
 <h3 align="center"><u>CI/CD Pipeline</u></h3>
+=======
 
 <p align="center">
 
