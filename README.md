@@ -9,7 +9,7 @@ A lightweight, cost effective Flask web application for analysing job postings. 
   - [How to Use](Documentation/How%20to%20Use.md)
 - [Set-up](Set-up/) - Setup resources
 
-## 🎯 Features
+## Features
 
 - **Azure Container App**: Production-ready deployment on Azure App Service
 - **Entra ID Integration**: Secure authentication via Microsoft Entra ID (Azure AD)
