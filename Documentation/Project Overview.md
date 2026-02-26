@@ -1,11 +1,8 @@
-# Project Overview
+<h1 align="center">Project Overview</h1>
 
-## Key Features
+<h3 align="center"><u>CI/CD Pipeline</u></h3>
 
-- **Health Check**: Support for Azure Load Balancer health probes
-- **Production Ready**: Uses Gunicorn + Supervisor + Nginx
-
-### CI/CD Pipeline
+<p align="center">
 
 ```mermaid
 flowchart TB
@@ -18,9 +15,11 @@ flowchart TB
     G --> H[Azure App Service Pulls :latest]
 ```
 
+</p>
+
 ---
 
-## 🏗️ Architecture
+<h2 align="center">🏗️ Architecture</h2>
 
 ```
 Azure VM (Ubuntu 24.04 LTS, B1s)
@@ -34,7 +33,7 @@ Gunicorn (Port 8000) → Flask App
 
 ---
 
-## 📦 Tech Stack
+<h2 align="center">📦 Tech Stack</h2>
 
 | Component | Technology |
 |-----------|------------|

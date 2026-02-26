@@ -1,6 +1,6 @@
-# Setup Guide
+<h1 align="center">Setup Guide</h1>
 
-## 🖥️ Local Development
+<h2 align="center">🖥️ Local Development</h2>
 
 ### 1. Clone and Setup
 
@@ -40,7 +40,7 @@ Open http://localhost:8000 in your browser.
 
 ---
 
-## ☁️ Azure Deployment
+<h2 align="center">☁️ Azure Deployment</h2>
 
 ### Prerequisites
 
@@ -74,7 +74,7 @@ curl -fsSL https://raw.githubusercontent.com/jacobbria/resume_webapp_AZ/main/set
 
 ---
 
-## 🔧 Configuration
+<h2 align="center">🔧 Configuration</h2>
 
 ### Environment Variables
 

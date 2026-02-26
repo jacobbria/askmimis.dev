@@ -1,3 +1,3 @@
-# How to Use
+<h1 align="center">How to Use</h1>
 
-> To be added after project completion - thanks for checking!
+<p align="center"><i>To be added after project completion - thanks for checking!</i></p>
