@@ -21,19 +21,35 @@ flowchart TB
 
 <h2 align="center">🏗️ Architecture</h2>
 
+<p align="center">
+
+```mermaid
+flowchart TB
+    A[Azure VM<br/>Ubuntu 24.04 LTS, B1s] --> B[Nginx<br/>Port 80]
+    B --> C[Gunicorn<br/>Port 8000]
+    C --> D[Flask App]
+    D --> E[SQLite Database]
 ```
-Azure VM (Ubuntu 24.04 LTS, B1s)
-           ↓
-Nginx (Port 80) → Reverse Proxy
-           ↓
-Gunicorn (Port 8000) → Flask App
-           ↓
-   SQLite Database (Demo Data)
-```
+
+</p>
+
+<div align="center">
+
+| Component | Description |
+|-----------|-------------|
+| **Azure VM** | Cloud infrastructure running Ubuntu 24.04 LTS on B1s tier |
+| **Nginx** | Reverse proxy handling incoming HTTP traffic on port 80 |
+| **Gunicorn** | WSGI server with 4 workers processing requests on port 8000 |
+| **Flask App** | Python web application handling routes and business logic |
+| **SQLite** | Lightweight database storing job posting data |
+
+</div>
 
 ---
 
 <h2 align="center">📦 Tech Stack</h2>
+
+<div align="center">
 
 | Component | Technology |
 |-----------|------------|
@@ -43,3 +59,5 @@ Gunicorn (Port 8000) → Flask App
 | **Database** | SQLite |
 | **Python** | 3.11+ |
 | **OS** | Ubuntu 24.04 LTS |
+
+</div>
