@@ -2,10 +2,11 @@
 
 ## Logical Architecture
 
-<img width="1263" height="2809" alt="Resume-WebApp-Diagram" src="https://github.com/user-attachments/assets/df8eab72-1b8e-4338-a7ef-460554fcc65b" />
+<img width="1263" height="3096" alt="Resume-WebApp-Diagram (1)" src="https://github.com/user-attachments/assets/47eb4ff0-2d60-470b-93f4-d879978c0069" />
+
 
 <h3 align="center"><u>CI/CD Pipeline</u></h3>
-=======
+
 
 <p align="center">
 
