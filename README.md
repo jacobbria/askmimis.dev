@@ -18,3 +18,7 @@ A lightweight, cost effective Flask web application for analysing job postings. 
 - **User Job Storage**: Authenticated users get personal job dashboards
 - **Health Monitoring**: Built-in health endpoint for Azure Load Balancer probes
 
+---
+
+**Production Status**: 🟢 LIVE - [askmimis.dev](https://askmimis.dev)
+

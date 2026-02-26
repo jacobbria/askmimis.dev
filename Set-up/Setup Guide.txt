@@ -12,8 +12,12 @@ pip install -r requirements.txt
 
 2. Environment Configuration
 
-cp .env.example .env
-# Edit .env with your settings (or use defaults for local dev)
+Create a .env file with the following variables:
+- SECRET_KEY=your-secret-key
+- GEMINI_API_KEY=your-gemini-api-key
+- ENTRA_CLIENT_ID=your-entra-client-id
+- EntraClientSecret=your-entra-client-secret
+- ENTRA_REDIRECT_URI=http://localhost:8000/auth/callback
 
 3. Run Locally
 
