@@ -2,10 +2,7 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 import os
 import logging
 from dotenv import load_dotenv
-import db
-import gemini_service
-import auth
-import job_parser
+from services import db, gemini_service, auth, job_parser
 
 # Load environment variables
 load_dotenv()
