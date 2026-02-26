@@ -6,8 +6,8 @@ A lightweight, cost effective Flask web application for analysing job postings. 
 
 - [Management](Management/) - App usage instructions and configuration guides
 - [Documentation](Documentation/) - Project documentation
-  - [How to Use](Documentation/How%20to%20Use.txt)
-  - [Set-up](Set-up/) - Setup resources
+  - [How to Use](Documentation/How%20to%20Use.md)
+- [Set-up](Set-up/) - Setup resources
 
 ## Features
 
