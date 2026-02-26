@@ -6,14 +6,15 @@ A lightweight, cost effective Flask web application for analysing job postings. 
 
 - [Management](Management/) - App usage instructions and configuration guides
 - [Documentation](Documentation/) - Project documentation
+  - [How to Use](Documentation/How%20to%20Use.txt)
 - [Set-up](Set-up/) - Setup resources
 
 ## 🎯 Features
 
-- **Home Page**: Greeting with "Use Demo Data" button
-- **Demo Dashboard**: Browse 6 trending job postings
-- **Job Details**: View complete job information
-- **Light/Modern UI**: Responsive design with gradient theme
-- **Health Check**: Support for Azure Load Balancer health probes
-- **Production Ready**: Uses Gunicorn + Supervisor + Nginx
+- **Azure Container App**: Production-ready deployment on Azure App Service
+- **Entra ID Integration**: Secure authentication via Microsoft Entra ID (Azure AD)
+- **Gemini API Integration**: AI-powered natural language job analysis
+- **Azure Key Vault**: Secure secrets and API key management
+- **User Job Storage**: Authenticated users get personal job dashboards
+- **Health Monitoring**: Built-in health endpoint for Azure Load Balancer probes
 
