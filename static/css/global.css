@@ -1,0 +1,224 @@
+/* ===========================================
+   MIMIS.dev Global Styles
+   Fonts, Colors, and Button Components
+   =========================================== */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Bungee&display=swap');
+
+/* ===========================================
+   CSS Variables - Color Palette
+   =========================================== */
+:root {
+    /* Landing Colors */
+    --color-landing-purple: #a260a5;
+    --color-landing-cream: #feffed;
+    
+    /* Primary Colors */
+    --color-primary: #667eea;
+    --color-primary-dark: #3d2a6f;
+    --color-secondary: #764ba2;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-bg: linear-gradient(45deg, #3d2a6f 0%, #667eea 25%, #764ba2 50%, #667eea 75%, #3d2a6f 100%);
+    
+    /* Text Colors */
+    --color-text-dark: #1a1a2e;
+    --color-text-light: #ffffff;
+    --color-text-muted: #6c757d;
+    
+    /* Status Colors */
+    --color-success: #4CAF50;
+    --color-error: #ff6b6b;
+    --color-warning: #ffc107;
+    
+    /* Background Colors */
+    --color-bg-white: #ffffff;
+    --color-bg-light: #f8f9fa;
+    --color-bg-overlay: rgba(0, 0, 0, 0.2);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 5px 20px rgba(102, 126, 234, 0.3);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.2);
+    
+    /* Fonts */
+    --font-title: 'Bungee', cursive;
+    --font-text: 'Amatic SC', cursive;
+    --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 40px;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-full: 50%;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+/* ===========================================
+   Typography
+   =========================================== */
+.title-font {
+    font-family: var(--font-title);
+}
+
+.text-font {
+    font-family: var(--font-text);
+}
+
+/* ===========================================
+   Button Component System
+   =========================================== */
+
+/* Base Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 30px;
+    font-family: var(--font-text);
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: transform var(--transition-fast), 
+                box-shadow var(--transition-fast),
+                background var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.btn:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Primary Button - Gradient */
+.btn-primary {
+    background: var(--gradient-primary);
+    color: var(--color-text-light);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+/* Secondary Button - Outline */
+.btn-secondary {
+    background: transparent;
+    color: var(--color-text-light);
+    border: 2px solid var(--color-text-light);
+}
+
+.btn-secondary:hover {
+    background: var(--color-text-light);
+    color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Ghost Button - Minimal */
+.btn-ghost {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-light);
+    backdrop-filter: blur(10px);
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: 8px 20px;
+    font-size: 18px;
+}
+
+.btn-lg {
+    padding: 16px 40px;
+    font-size: 32px;
+}
+
+.btn-xl {
+    padding: 20px 50px;
+    font-size: 36px;
+}
+
+/* ===========================================
+   Utility Classes
+   =========================================== */
+.text-center {
+    text-align: center;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+/* ===========================================
+   Animations
+   =========================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        transform: scale(1); 
+    }
+    50% { 
+        transform: scale(1.05); 
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
