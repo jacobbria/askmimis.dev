@@ -228,11 +228,11 @@
             position: absolute;
             background-color: var(--color-landing-purple);
             color: var(--color-landing-cream);
-            padding: 15px 20px;
+            padding: clamp(10px, 2vw, 20px) clamp(15px, 3vw, 30px);
             border-radius: 8px;
             font-family: var(--font-text);
-            font-size: clamp(14px, 3vw, 18px);
-            width: 200px;
+            font-size: clamp(14px, 3vw, 24px);
+            width: clamp(150px, 30vw, 300px);
             text-align: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             opacity: 0;
@@ -283,12 +283,12 @@
     <!-- Section 2: Cream - Button Only -->
     <section class="section section-2">
         <!-- Side Ask Text -->
-        <span class="side-ask" onclick="toggleDescription('ask')">Ask</span>
-        <div class="description-popup ask-description" id="ask-desc">Learn about job opportunities and career growth</div>
+        <span class="side-ask" onclick="toggleDescription('ask')">Add</span>
+        <div class="description-popup ask-description" id="ask-desc">Store job postings in a database for analysis.</div>
 
         <!-- Side Add Text -->
-        <span class="side-add" onclick="toggleDescription('add')">Add</span>
-        <div class="description-popup add-description" id="add-desc">Submit your job listings and opportunities</div>
+        <span class="side-add" onclick="toggleDescription('add')">Ask</span>
+        <div class="description-popup add-description" id="add-desc">Query your postings for insights and trends.</div>
 
         <a href="{{ url_for('jobs') }}" class="btn btn-primary">
             Begin
