@@ -45,6 +45,7 @@
             background-color: var(--color-landing-cream);
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
         .section-content {
@@ -96,7 +97,7 @@
         }
 
         .mimir-image {
-            width: clamp(180px, 32vw, 360px);
+            width: clamp(180px, 32vw, 550px);
             height: auto;
             display: block;
             filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.3))
@@ -168,12 +169,93 @@
             }
         }
 
+        /* Side "Ask" Text */
+        .side-ask {
+            position: absolute;
+            left: 300px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--font-text);
+            font-size: clamp(24px, 6vw, 72px);
+            color: var(--color-landing-purple);
+            text-decoration: none;
+            cursor: pointer;
+            transition: text-decoration 0.3s ease;
+            z-index: 15;
+        }
+
+        .side-ask:hover {
+            text-decoration: underline;
+        }
+
+        /* Side "Add" Text */
+        .side-add {
+            position: absolute;
+            right: 300px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--font-text);
+            font-size: clamp(24px, 6vw, 72px);
+            color: var(--color-landing-purple);
+            text-decoration: none;
+            cursor: pointer;
+            transition: text-decoration 0.3s ease;
+            z-index: 15;
+        }
+
+        .side-add:hover {
+            text-decoration: underline;
+        }
+
         /* Begin Button - Higher Z-Index */
         .section-2 .btn {
             position: relative;
             z-index: 100;
-            margin-bottom: 60px;
             border: 5px solid black;
+            background: var(--color-landing-purple) !important;
+            color: var(--color-landing-cream);
+            padding: 20px 60px;
+            font-size: clamp(18px, 4vw, 42px);
+            font-weight: 700;
+        }
+
+        .section-2 .btn:hover {
+            background: #8d4d8f !important;
+        }
+
+        /* Description Popup */
+        .description-popup {
+            position: absolute;
+            background-color: var(--color-landing-purple);
+            color: var(--color-landing-cream);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: var(--font-text);
+            font-size: clamp(14px, 3vw, 18px);
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 20;
+        }
+
+        .description-popup.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .ask-description {
+            left: 300px;
+            top: calc(50% + 80px);
+            transform: translateX(-50%);
+        }
+
+        .add-description {
+            right: 300px;
+            top: calc(50% + 80px);
+            transform: translateX(50%);
         }
     </style>
 </head>
@@ -200,9 +282,32 @@
 
     <!-- Section 2: Cream - Button Only -->
     <section class="section section-2">
+        <!-- Side Ask Text -->
+        <span class="side-ask" onclick="toggleDescription('ask')">Ask</span>
+        <div class="description-popup ask-description" id="ask-desc">Learn about job opportunities and career growth</div>
+
+        <!-- Side Add Text -->
+        <span class="side-add" onclick="toggleDescription('add')">Add</span>
+        <div class="description-popup add-description" id="add-desc">Submit your job listings and opportunities</div>
+
         <a href="{{ url_for('jobs') }}" class="btn btn-primary">
             Begin
         </a>
     </section>
+
+    <script>
+        function toggleDescription(type) {
+            const askDesc = document.getElementById('ask-desc');
+            const addDesc = document.getElementById('add-desc');
+            
+            if (type === 'ask') {
+                askDesc.classList.toggle('show');
+                addDesc.classList.remove('show');
+            } else if (type === 'add') {
+                addDesc.classList.toggle('show');
+                askDesc.classList.remove('show');
+            }
+        }
+    </script>
 </body>
 </html>
