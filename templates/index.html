@@ -383,9 +383,81 @@
             top: calc(50% + 80px);
             transform: translateX(50%);
         }
+
+        /* Hamburger Menu */
+        .burger-menu {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .burger-icon {
+            font-size: 32px;
+            color: #333;
+            user-select: none;
+            transition: color 0.5s ease;
+        }
+
+        .burger-menu.open .burger-icon {
+            color: var(--color-landing-yellow);
+        }
+
+        .burger-menu-items {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--color-landing-yellow);
+            flex-direction: column;
+            padding: 80px 20px 20px 20px;
+            z-index: 999;
+            overflow-y: auto;
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .burger-menu-items.open {
+            left: 0;
+        }
+
+        .burger-menu-items a {
+            padding: 20px;
+            text-decoration: none;
+            color: #333;
+            font-family: var(--font-text);
+            font-size: 20px;
+            font-weight: 500;
+            display: block;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .burger-menu-items a:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: translateX(10px);
+        }
     </style>
 </head>
 <body>
+    <!-- Hamburger Menu -->
+    <div class="burger-menu" id="burgerMenu">
+        <span class="burger-icon" onclick="toggleBurgerMenu()">☰</span>
+    </div>
+
+    <!-- Burger Menu Items -->
+    <div class="burger-menu-items" id="burgerMenuItems">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="#">Add</a>
+        <a href="#">Ask</a>
+        <a href="#">Query</a>
+    </div>
 
     <!-- Section 1: Purple -->
     <section class="section section-1">
@@ -445,6 +517,19 @@
                 askDesc.classList.remove('show');
             }
         }
+
+        function toggleBurgerMenu() {
+            const burgerMenuItems = document.getElementById('burgerMenuItems');
+            burgerMenuItems.classList.toggle('open');
+        }
+
+        // Close burger menu when a link is clicked
+        const burgerLinks = document.querySelectorAll('.burger-menu-items a');
+        burgerLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('burgerMenuItems').classList.remove('open');
+            });
+        });
     </script>
 </body>
 </html>
