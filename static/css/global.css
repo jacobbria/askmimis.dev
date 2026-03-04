@@ -68,6 +68,11 @@
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
+    
+    /* Highlight Effect */
+    --highlight-decoration: underline;
+    --highlight-thickness: 2px;
+    --highlight-offset: 5px;
 }
 
 /* ===========================================
@@ -79,6 +84,16 @@
 
 .text-font {
     font-family: var(--font-text);
+}
+
+/* ===========================================
+   Interactive Effects - Highlight
+   =========================================== */
+.highlight {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+    transition: all var(--transition-normal);
 }
 
 /* ===========================================

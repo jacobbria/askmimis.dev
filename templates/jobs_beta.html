@@ -105,12 +105,50 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            overflow: hidden;
+            overflow: visible;
+            position: relative;
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #000000;
+            border-radius: 16px;
+            pointer-events: none;
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+        }
+
+        .job-card:hover::before {
+            animation: drawBorder 1s ease-in-out forwards;
         }
 
         .job-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px);
+        }
+
+        @keyframes drawBorder {
+            0% {
+                clip-path: inset(0 100% 100% 0);
+            }
+            25% {
+                clip-path: inset(0 0 100% 0);
+            }
+            50% {
+                clip-path: inset(0 0 0 0);
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        .job-card:hover .job-title {
+            text-decoration: var(--highlight-decoration, underline);
+            text-decoration-thickness: var(--highlight-thickness, 2px);
+            text-underline-offset: var(--highlight-offset, 5px);
         }
 
         .job-card-header {
@@ -128,9 +166,6 @@
             margin: 0;
             line-height: 1.2;
             word-wrap: break-word;
-            text-decoration: underline;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 5px;
         }
 
         .job-company {
@@ -145,6 +180,7 @@
             font-size: 18px;
             color: #666;
             margin: 0;
+            margin-top: auto;
         }
 
         .job-meta-item {
@@ -163,7 +199,7 @@
             font-size: 16px;
             line-height: 1.4;
             color: #555;
-            margin: 10px 0 0 0;
+            margin: 10px 0 15px 0;
         }
 
         .job-tags {
@@ -171,7 +207,14 @@
         }
 
         .job-tag {
-            display: none;
+            background-color: var(--color-landing-yellow, #fde008);
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .job-button {
@@ -212,7 +255,12 @@
             font-size: 32px;
             color: #333;
             user-select: none;
-            transition: color 0.5s ease;
+            transition: color 0.5s ease, transform 0.5s ease;
+            display: inline-block;
+        }
+
+        .burger-icon.rotated {
+            transform: rotate(90deg);
         }
 
         .burger-menu.open .burger-icon {
@@ -252,8 +300,9 @@
         }
 
         .burger-menu-items a:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-            transform: translateX(10px);
+            text-decoration: var(--highlight-decoration, underline);
+            text-decoration-thickness: var(--highlight-thickness, 2px);
+            text-underline-offset: var(--highlight-offset, 5px);
         }
 
         /* Responsive */
@@ -306,7 +355,6 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="#">Add</a>
         <a href="#">Ask</a>
-        <a href="#">Query</a>
     </div>
 
     <!-- Header Section -->
@@ -331,6 +379,11 @@
                 <div>
                     <h3 class="job-title">Senior Full Stack Developer</h3>
                     <p class="job-description">Join our team to build scalable web applications using modern technologies.</p>
+                    <div class="job-tags">
+                        <span class="job-tag">React</span>
+                        <span class="job-tag">Node.js</span>
+                        <span class="job-tag">Python</span>
+                    </div>
                 </div>
                 <div class="job-meta">
                     <div class="job-meta-item">📍 San Francisco, CA</div>
@@ -346,6 +399,11 @@
                 <div>
                     <h3 class="job-title">Data Science Engineer</h3>
                     <p class="job-description">Build cutting-edge data pipelines and machine learning models with our analytics team.</p>
+                    <div class="job-tags">
+                        <span class="job-tag">Python</span>
+                        <span class="job-tag">SQL</span>
+                        <span class="job-tag">Machine Learning</span>
+                    </div>
                 </div>
                 <div class="job-meta">
                     <div class="job-meta-item">📍 New York, NY</div>
@@ -361,6 +419,11 @@
                 <div>
                     <h3 class="job-title">DevOps Engineer</h3>
                     <p class="job-description">Manage cloud infrastructure and CI/CD pipelines using containerization and orchestration.</p>
+                    <div class="job-tags">
+                        <span class="job-tag">Kubernetes</span>
+                        <span class="job-tag">Docker</span>
+                        <span class="job-tag">CI/CD</span>
+                    </div>
                 </div>
                 <div class="job-meta">
                     <div class="job-meta-item">📍 Seattle, WA</div>
@@ -376,6 +439,11 @@
                 <div>
                     <h3 class="job-title">Frontend Engineer</h3>
                     <p class="job-description">Create beautiful and responsive user interfaces while collaborating with designers.</p>
+                    <div class="job-tags">
+                        <span class="job-tag">React</span>
+                        <span class="job-tag">TypeScript</span>
+                        <span class="job-tag">CSS</span>
+                    </div>
                 </div>
                 <div class="job-meta">
                     <div class="job-meta-item">📍 Austin, TX</div>
@@ -392,18 +460,34 @@
         // Toggle burger menu
         function toggleBurgerMenu() {
             const burgerMenuItems = document.getElementById('burgerMenuItems');
-            const burgerMenu = document.getElementById('burgerMenu');
+            const burgerIcon = document.querySelector('.burger-icon');
             burgerMenuItems.classList.toggle('open');
-            burgerMenu.classList.toggle('open');
+            burgerIcon.classList.toggle('rotated');
         }
 
         // Close burger menu when a link is clicked
         const burgerLinks = document.querySelectorAll('.burger-menu-items a');
         burgerLinks.forEach(link => {
             link.addEventListener('click', function() {
-                document.getElementById('burgerMenuItems').classList.remove('open');
-                document.getElementById('burgerMenu').classList.remove('open');
+                const burgerMenuItems = document.getElementById('burgerMenuItems');
+                const burgerIcon = document.querySelector('.burger-icon');
+                burgerMenuItems.classList.remove('open');
+                burgerIcon.classList.remove('rotated');
             });
+        });
+
+        // Close burger menu when clicking outside of it
+        document.addEventListener('click', function(event) {
+            const burgerMenu = document.getElementById('burgerMenu');
+            const burgerMenuItems = document.getElementById('burgerMenuItems');
+            const burgerIcon = document.querySelector('.burger-icon');
+            const isClickInsideMenu = burgerMenuItems.contains(event.target);
+            const isClickOnIcon = burgerMenu.contains(event.target);
+            
+            if (!isClickInsideMenu && !isClickOnIcon) {
+                burgerMenuItems.classList.remove('open');
+                burgerIcon.classList.remove('rotated');
+            }
         });
 
         // Flat color palette

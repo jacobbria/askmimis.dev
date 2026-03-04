@@ -400,7 +400,12 @@
             font-size: 32px;
             color: #333;
             user-select: none;
-            transition: color 0.5s ease;
+            transition: color 0.5s ease, transform 0.5s ease;
+            display: inline-block;
+        }
+
+        .burger-icon.rotated {
+            transform: rotate(90deg);
         }
 
         .burger-menu.open .burger-icon {
@@ -440,8 +445,9 @@
         }
 
         .burger-menu-items a:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-            transform: translateX(10px);
+            text-decoration: var(--highlight-decoration, underline);
+            text-decoration-thickness: var(--highlight-thickness, 2px);
+            text-underline-offset: var(--highlight-offset, 5px);
         }
     </style>
 </head>
@@ -456,7 +462,6 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="#">Add</a>
         <a href="#">Ask</a>
-        <a href="#">Query</a>
     </div>
 
     <!-- Section 1: Purple -->
@@ -520,15 +525,34 @@
 
         function toggleBurgerMenu() {
             const burgerMenuItems = document.getElementById('burgerMenuItems');
+            const burgerIcon = document.querySelector('.burger-icon');
             burgerMenuItems.classList.toggle('open');
+            burgerIcon.classList.toggle('rotated');
         }
 
         // Close burger menu when a link is clicked
         const burgerLinks = document.querySelectorAll('.burger-menu-items a');
         burgerLinks.forEach(link => {
             link.addEventListener('click', function() {
-                document.getElementById('burgerMenuItems').classList.remove('open');
+                const burgerMenuItems = document.getElementById('burgerMenuItems');
+                const burgerIcon = document.querySelector('.burger-icon');
+                burgerMenuItems.classList.remove('open');
+                burgerIcon.classList.remove('rotated');
             });
+        });
+
+        // Close burger menu when clicking outside of it
+        document.addEventListener('click', function(event) {
+            const burgerMenu = document.getElementById('burgerMenu');
+            const burgerMenuItems = document.getElementById('burgerMenuItems');
+            const burgerIcon = document.querySelector('.burger-icon');
+            const isClickInsideMenu = burgerMenuItems.contains(event.target);
+            const isClickOnIcon = burgerMenu.contains(event.target);
+            
+            if (!isClickInsideMenu && !isClickOnIcon) {
+                burgerMenuItems.classList.remove('open');
+                burgerIcon.classList.remove('rotated');
+            }
         });
     </script>
 </body>
