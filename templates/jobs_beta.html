@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs - Ask MIMIS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Bungee&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-text, 'Amatic SC', cursive);
+            background-color: #f5f5f5;
+        }
+
+        /* Header Section */
+        .jobs-header {
+            width: 100%;
+            background-color: white;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-images-container {
+            display: flex;
+            gap: 0;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .header-image {
+            flex: 1;
+            min-width: 160px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            font-family: var(--font-text);
+        }
+
+        .img-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .img-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .img-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .img-4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .img-5 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .img-6 {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        /* Jobs Section */
+        .jobs-section {
+            padding: 60px 20px;
+            background-color: #f5f5f5;
+        }
+
+        .jobs-section-title {
+            text-align: center;
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 48px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .jobs-cards-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .job-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+            aspect-ratio: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .job-card-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .job-title {
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+            line-height: 1.2;
+            word-wrap: break-word;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 5px;
+        }
+
+        .job-company {
+            display: none;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            color: #666;
+            margin: 0;
+        }
+
+        .job-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .job-meta-item:nth-child(2),
+        .job-meta-item:nth-child(3) {
+            display: none;
+        }
+
+        .job-description {
+            display: block;
+            font-size: 16px;
+            line-height: 1.4;
+            color: #555;
+            margin: 10px 0 0 0;
+        }
+
+        .job-tags {
+            display: none;
+        }
+
+        .job-tag {
+            display: none;
+        }
+
+        .job-button {
+            display: none;
+        }
+
+        .job-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .job-applied-label {
+            font-size: 18px;
+            color: #666;
+            font-family: var(--font-text);
+        }
+
+        /* Hamburger Menu */
+        .burger-menu {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .burger-icon {
+            font-size: 32px;
+            color: #333;
+            user-select: none;
+            transition: color 0.5s ease;
+        }
+
+        .burger-menu.open .burger-icon {
+            color: var(--color-landing-yellow);
+        }
+
+        .burger-menu-items {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--color-landing-yellow);
+            flex-direction: column;
+            padding: 80px 20px 20px 20px;
+            z-index: 999;
+            overflow-y: auto;
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .burger-menu-items.open {
+            left: 0;
+        }
+
+        .burger-menu-items a {
+            padding: 20px;
+            text-decoration: none;
+            color: #333;
+            font-family: var(--font-text);
+            font-size: 20px;
+            font-weight: 500;
+            display: block;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .burger-menu-items a:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: translateX(10px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .jobs-section-title {
+                font-size: 36px;
+                margin-bottom: 30px;
+            }
+
+            .header-image {
+                min-width: 100px;
+                font-size: 14px;
+            }
+
+            .jobs-cards-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .job-title {
+                font-size: 22px;
+            }
+
+            .job-company {
+                font-size: 16px;
+            }
+
+            .job-meta {
+                font-size: 14px;
+                gap: 10px;
+            }
+
+            .job-description {
+                font-size: 16px;
+            }
+
+            .job-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hamburger Menu -->
+    <div class="burger-menu" id="burgerMenu">
+        <span class="burger-icon" onclick="toggleBurgerMenu()">☰</span>
+    </div>
+
+    <!-- Burger Menu Items -->
+    <div class="burger-menu-items" id="burgerMenuItems">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="#">Add</a>
+        <a href="#">Ask</a>
+        <a href="#">Query</a>
+    </div>
+
+    <!-- Header Section -->
+    <section class="jobs-header">
+        <div class="header-images-container">
+            <div class="header-image img-1">IMG1</div>
+            <div class="header-image img-2">IMG2</div>
+            <div class="header-image img-3">IMG3</div>
+            <div class="header-image img-4">IMG4</div>
+            <div class="header-image img-5">IMG5</div>
+            <div class="header-image img-6">IMG6</div>
+        </div>
+    </section>
+
+    <!-- Jobs Section -->
+    <section class="jobs-section">
+        <h2 class="jobs-section-title">Available Positions</h2>
+        
+        <div class="jobs-cards-container">
+            <!-- Placeholder Job Card 1 -->
+            <div class="job-card">
+                <div>
+                    <h3 class="job-title">Senior Full Stack Developer</h3>
+                    <p class="job-description">Join our team to build scalable web applications using modern technologies.</p>
+                </div>
+                <div class="job-meta">
+                    <div class="job-meta-item">📍 San Francisco, CA</div>
+                    <div class="job-checkbox-wrapper">
+                        <input type="checkbox" class="job-checkbox">
+                        <span class="job-applied-label">Applied</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder Job Card 2 -->
+            <div class="job-card">
+                <div>
+                    <h3 class="job-title">Data Science Engineer</h3>
+                    <p class="job-description">Build cutting-edge data pipelines and machine learning models with our analytics team.</p>
+                </div>
+                <div class="job-meta">
+                    <div class="job-meta-item">📍 New York, NY</div>
+                    <div class="job-checkbox-wrapper">
+                        <input type="checkbox" class="job-checkbox">
+                        <span class="job-applied-label">Applied</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder Job Card 3 -->
+            <div class="job-card">
+                <div>
+                    <h3 class="job-title">DevOps Engineer</h3>
+                    <p class="job-description">Manage cloud infrastructure and CI/CD pipelines using containerization and orchestration.</p>
+                </div>
+                <div class="job-meta">
+                    <div class="job-meta-item">📍 Seattle, WA</div>
+                    <div class="job-checkbox-wrapper">
+                        <input type="checkbox" class="job-checkbox">
+                        <span class="job-applied-label">Applied</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder Job Card 4 -->
+            <div class="job-card">
+                <div>
+                    <h3 class="job-title">Frontend Engineer</h3>
+                    <p class="job-description">Create beautiful and responsive user interfaces while collaborating with designers.</p>
+                </div>
+                <div class="job-meta">
+                    <div class="job-meta-item">📍 Austin, TX</div>
+                    <div class="job-checkbox-wrapper">
+                        <input type="checkbox" class="job-checkbox">
+                        <span class="job-applied-label">Applied</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Toggle burger menu
+        function toggleBurgerMenu() {
+            const burgerMenuItems = document.getElementById('burgerMenuItems');
+            const burgerMenu = document.getElementById('burgerMenu');
+            burgerMenuItems.classList.toggle('open');
+            burgerMenu.classList.toggle('open');
+        }
+
+        // Close burger menu when a link is clicked
+        const burgerLinks = document.querySelectorAll('.burger-menu-items a');
+        burgerLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('burgerMenuItems').classList.remove('open');
+                document.getElementById('burgerMenu').classList.remove('open');
+            });
+        });
+
+        // Flat color palette
+        const colorPalette = [
+            '#FF6B6B', // Red
+            '#4ECDC4', // Teal
+            '#FFE66D', // Yellow
+            '#95E1D3', // Mint
+            '#F38181', // Salmon
+            '#AA96DA', // Purple
+            '#FCBAD3', // Pink
+            '#A8D8EA', // Light Blue
+            '#AA96DA', // Lavender
+            '#FFD93D', // Golden
+            '#6BCB77', // Green
+            '#4D96FF', // Blue
+            '#FF6348', // Tomato
+            '#A29BFE', // Periwinkle
+            '#FFA502', // Orange
+            '#48DBFB'  // Sky Blue
+        ];
+
+        // Assign random colors to job cards
+        document.querySelectorAll('.job-card').forEach((card, index) => {
+            const randomColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+            card.style.backgroundColor = randomColor;
+        });
+    </script>
+</body>
+</html>

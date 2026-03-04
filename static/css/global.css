@@ -20,6 +20,9 @@
     --color-primary-dark: #3d2a6f;
     --color-secondary: #764ba2;
     
+    /* Border Colors */
+    --color-border-dark: #000000;
+    
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --gradient-bg: linear-gradient(45deg, #3d2a6f 0%, #667eea 25%, #764ba2 50%, #667eea 75%, #3d2a6f 100%);

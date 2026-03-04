@@ -57,6 +57,13 @@ def jobs():
         logger.error(f"Error loading jobs: {str(e)}", exc_info=True)
         return render_template('error.html', message='Error loading job data'), 500
 
+@app.route('/jobsbeta')
+def jobsbeta():
+    """Beta jobs viewing page with new UI design."""
+    logger.info("Jobs Beta page accessed")
+    is_authenticated = auth.is_authenticated(session)
+    return render_template('jobs_beta.html', is_authenticated=is_authenticated)
+
 @app.route('/api/analyze', methods=['POST'])
 def analyze_query():
     """API endpoint to analyze job postings based on natural language query."""
