@@ -22,6 +22,7 @@
 
         body {
             font-family: var(--font-system);
+            overflow-x: hidden;
             background-color: var(--color-landing-cream);
         }
 
@@ -175,18 +176,34 @@
                 flex-direction: column;
                 width: auto;
             }
+            
+            .side-add-container {
+                margin-top: 40px;
+            }
 
-            .ask-description {
-                    left: 0px;
-                    top: 0;
-                    transform: translateX(0);
+            .side-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .ask-description,
+            .add-description {
+                position: relative !important;
+                left: auto !important;
+                right: auto !important;
+                top: auto !important;
+                transform: none !important;
+                
             }
 
             .side-ask {
                 position: static !important;
                 margin-left: 0;
                 margin-right: 0;
-                margin-bottom: 40px;
+                margin-bottom: 20px;
+                
                 transform: none !important;
                 transform-origin: center center;
                 display: flex;
@@ -201,7 +218,7 @@
                 right: auto;
                 margin-right: 0;
                 margin-left: 0;
-                margin-bottom: 40px;
+                margin-bottom: 20px;
                 transform: none !important;
                 transform-origin: center center;
                 display: flex;
@@ -221,6 +238,7 @@
                 position: static;
                 transform: none;
                 justify-content: center;
+                margin-top: 60px;
                 
             }
         }
@@ -397,13 +415,17 @@
     <!-- Section 2: Cream - Button Only -->
     <section class="section section-2">
         <div class="descriptive_text">
-            <!-- Side Ask Text -->
-            <span class="side-ask" onclick="toggleDescription('ask')">Add</span>
-            <div class="description-popup ask-description" id="ask-desc">Store job postings in a database for analysis.</div>
+            <!-- Side Ask Container -->
+            <div class="side-container side-ask-container">
+                <span class="side-ask" onclick="toggleDescription('ask')">Add</span>
+                <div class="description-popup ask-description" id="ask-desc">Store job postings in a database for analysis.</div>
+            </div>
 
-            <!-- Side Add Text -->
-            <span class="side-add" onclick="toggleDescription('add')">Ask</span>
-            <div class="description-popup add-description" id="add-desc">Query your postings for insights and trends.</div>
+            <!-- Side Add Container -->
+            <div class="side-container side-add-container">
+                <span class="side-add" onclick="toggleDescription('add')">Ask</span>
+                <div class="description-popup add-description" id="add-desc">Query your postings for insights and trends.</div>
+            </div>
         </div>
         <a href="{{ url_for('jobs') }}" class="btn btn-primary">
             Begin
