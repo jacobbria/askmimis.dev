@@ -24,6 +24,27 @@
             background-color: white;
             padding: 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .header-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 72px;
+            color: white;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 48px;
+            }
         }
 
         .header-images-container {
@@ -342,6 +363,120 @@
                 padding: 20px;
             }
         }
+
+        /* Search Container */
+        .search-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 420px;
+            height: 100px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            pointer-events: none;
+        }
+
+        .search-container img:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+            filter: brightness(1.2);
+        }
+
+        /* Textbox Container */
+        .search-textbox-wrapper {
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 500px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.8s ease-out;
+            pointer-events: auto;
+            margin-right: -100px;
+            transform-origin: right;
+        }
+
+        .search-textbox-wrapper.show {
+            opacity: 1;
+            visibility: visible;
+            animation: slideFromRight 1s ease-out forwards;
+        }
+
+        @keyframes slideFromRight {
+            0% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes slideToRight {
+            0% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+        }
+
+        .search-textbox-wrapper.hide {
+            animation: slideToRight 1s ease-out forwards;
+        }
+
+        .search-input-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: start;
+            justify-content: start;
+            padding-left: 20px;
+        }
+
+        .search-input-wrapper input {
+            width: 250px;
+            height: 80px;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            font-family: var(--font-text);
+            font-size: 25px;
+            outline: none;
+            text-align: center;
+            color: #333;
+        }
+
+        .search-input-wrapper input::placeholder {
+            color: #bbb;
+        }
+
+        .search-mimir {
+            height: 200px;
+            object-fit: contain;
+            flex-shrink: 0;
+            transform: translateX(30px);
+            margin-top: 30px;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+        }
+
+        .search-mimir:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
     </style>
 </head>
 <body>
@@ -357,8 +492,19 @@
         <a href="#">Ask</a>
     </div>
 
+    <!-- Search Container -->
+    <div class="search-container" id="searchContainer">
+        <div class="search-textbox-wrapper" id="textboxWrapper">
+            <div class="search-input-wrapper">
+                <input type="text" placeholder="Enter here to consult the Gods...">
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/Mimir_Head_LongBeard.png') }}" alt="Mimir" class="search-mimir">
+    </div>
+
     <!-- Header Section -->
     <section class="jobs-header">
+        <h1 class="header-title">JOBS</h1>
         <div class="header-images-container">
             <div class="header-image img-1">IMG1</div>
             <div class="header-image img-2">IMG2</div>
@@ -371,8 +517,6 @@
 
     <!-- Jobs Section -->
     <section class="jobs-section">
-        <h2 class="jobs-section-title">Available Positions</h2>
-        
         <div class="jobs-cards-container">
             <!-- Placeholder Job Card 1 -->
             <div class="job-card">
@@ -490,6 +634,19 @@
             }
         });
 
+        // Show search textbox after 1.5 seconds
+        setTimeout(() => {
+            const textboxWrapper = document.getElementById('textboxWrapper');
+            textboxWrapper.classList.add('show');
+        }, 1000);
+
+        // Hide search textbox after 3 seconds of being visible (1.5s delay + 1s animation + 3s visible)
+        setTimeout(() => {
+            const textboxWrapper = document.getElementById('textboxWrapper');
+            textboxWrapper.classList.remove('show');
+            textboxWrapper.classList.add('hide');
+        }, 5500);
+
         // Flat color palette
         const colorPalette = [
             '#FF6B6B', // Red
@@ -516,5 +673,7 @@
             card.style.backgroundColor = randomColor;
         });
     </script>
+
+
 </body>
 </html>
