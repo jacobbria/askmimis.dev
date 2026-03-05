@@ -110,7 +110,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr));
             gap: 25px;
             padding: 0 20px;
         }
@@ -477,9 +477,153 @@
             filter: brightness(1.2);
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background-color: var(--color-landing-purple, #a260a5);
+            border-radius: 50px;
+            width: 90%;
+            max-width: 700px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease-out;
+        }
+
+        .modal-overlay.active .modal-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            background: #f0f0f0;
+            transform: rotate(90deg);
+        }
+
+        .modal-search-section {
+            padding: 0px 20px 0px 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: -55px;
+            margin-bottom: -30px;
+        }
+
+        .modal-search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            background: white;
+            font-family: var(--font-text);
+            font-size: 18px;
+            color: #333;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-search-input::placeholder {
+            color: #bbb;
+        }
+
+        .modal-search-mimir {
+            height: 180px;
+            object-fit: contain;
+            flex-shrink: 0;
+            cursor: pointer;
+            transform: translateX(-40px);
+            z-index: 999;
+        }
+
+        .modal-answer-section {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            background-color: var(--color-landing-cream, #feffed);
+        }
+
+        .modal-answer-text {
+            color: var(--color-text-dark, #1a1a2e);
+            font-family: var(--font-text);
+            font-size: 18px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .modal-title {
+            padding: 20px 30px 5px 30px;
+            text-align: left;
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 28px;
+            color: white;
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <button class="modal-close-btn" onclick="closeModal()">×</button>
+            <h2 class="modal-title">CONSULT THE GODS</h2>
+            <div class="modal-search-section">
+                <input type="text" class="modal-search-input" id="modalSearchInput" placeholder="Ask Mimir something..." onkeypress="handleModalSearch(event)">
+                <img src="{{ url_for('static', filename='images/Mimir_Head_LongBeard.png') }}" alt="Mimir" class="modal-search-mimir" onclick="performSearch()" style="cursor: pointer;">
+            </div>
+            <div class="modal-answer-section">
+                <div class="modal-answer-text" id="modalAnswerText">Ask me anything...</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hamburger Menu -->
     <div class="burger-menu" id="burgerMenu">
         <span class="burger-icon" onclick="toggleBurgerMenu()">☰</span>
@@ -646,6 +790,74 @@
             textboxWrapper.classList.remove('show');
             textboxWrapper.classList.add('hide');
         }, 5500);
+
+        // Open modal when clicking search mimir image
+        document.querySelector('.search-mimir').addEventListener('click', function() {
+            openModal();
+        });
+
+        function openModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.add('active');
+            document.getElementById('modalSearchInput').focus();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.remove('active');
+            document.getElementById('modalAnswerText').textContent = 'Ask me anything...';
+            document.getElementById('modalSearchInput').value = '';
+        }
+
+        function performSearch() {
+            const input = document.getElementById('modalSearchInput').value;
+            if (input.trim()) {
+                const answerText = document.getElementById('modalAnswerText');
+                
+                // Loading messages bank
+                const loadingMessages = [
+                    'Mimir is thinking...',
+                    'Interesting question...',
+                    'Dispatching the ravens...',
+                    'Knowledge is power!'
+                ];
+                
+                // Show random loading message
+                const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+                answerText.textContent = randomMessage;
+                
+                // Set minimum 2.5 second timer before showing final answer
+                const startTime = Date.now();
+                const minimumWaitTime = 2500; // 2.5 seconds in milliseconds
+                
+                // Simulate API call (in real scenario, this would be an actual API)
+                setTimeout(() => {
+                    // Calculate elapsed time
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minimumWaitTime - elapsedTime);
+                    
+                    // Wait any remaining time before showing answer
+                    setTimeout(() => {
+                        answerText.textContent = 'Generic answer 123...';
+                    }, remainingTime);
+                }, 0); // Simulate API returning immediately
+                
+                document.getElementById('modalSearchInput').value = '';
+            }
+        }
+
+        function handleModalSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        // Close modal when clicking outside of it
+        document.getElementById('modalOverlay').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
 
         // Flat color palette
         const colorPalette = [
