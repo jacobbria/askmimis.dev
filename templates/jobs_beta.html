@@ -508,10 +508,28 @@
             flex-direction: column;
             position: relative;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            overflow: visible;
             opacity: 0;
             transform: scale(0.9);
             transition: all 0.8s ease-out;
+        }
+
+        .modal-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #000000;
+            border-radius: 50px;
+            pointer-events: none;
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            z-index: 10;
+        }
+
+        .modal-overlay.active .modal-container::before {
+            animation: drawBorder 1s ease-in-out forwards;
         }
 
         .modal-overlay.active .modal-container {
@@ -587,6 +605,7 @@
             display: flex;
             align-items: flex-start;
             background-color: var(--color-landing-cream, #feffed);
+            border-radius: 50px;
         }
 
         .modal-answer-text {
@@ -606,6 +625,162 @@
             margin: 0;
         }
 
+        /* Job Detail Modal */
+        .job-detail-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .job-detail-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .job-detail-modal-container {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            height: auto;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: visible;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease-out;
+        }
+
+        .job-detail-modal-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #000000;
+            border-radius: 16px;
+            pointer-events: none;
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            z-index: 10;
+        }
+
+        .job-detail-modal-overlay.active .job-detail-modal-container::before {
+            animation: drawBorder 1s ease-in-out forwards;
+        }
+
+        .job-detail-modal-overlay.active .job-detail-modal-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .job-detail-modal-title {
+            padding: 25px 25px 15px 25px;
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 24px;
+            color: #1a1a2e;
+            margin: 0;
+            text-align: left;
+        }
+
+        .job-detail-modal-divider {
+            height: 2px;
+            background-color: #e0e0e0;
+            margin: 0 25px;
+        }
+
+        .job-detail-modal-content {
+            padding: 20px 25px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .job-detail-description {
+            font-family: var(--font-text);
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .job-detail-section-title {
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 16px;
+            color: #1a1a2e;
+            margin: 15px 0 10px 0;
+            font-weight: bold;
+        }
+
+        .job-detail-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .job-detail-skill-tag {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-family: var(--font-text);
+        }
+
+        .job-detail-footer {
+            padding: 15px 25px;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .job-detail-location-pay {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .job-detail-location,
+        .job-detail-pay {
+            font-family: var(--font-text);
+            font-size: 14px;
+            color: #333;
+            margin: 0;
+        }
+
+        .job-detail-apply-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-detail-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .job-detail-applied-label {
+            font-family: var(--font-text);
+            font-size: 14px;
+            color: #666;
+        }
+
     </style>
 </head>
 <body>
@@ -620,6 +795,30 @@
             </div>
             <div class="modal-answer-section">
                 <div class="modal-answer-text" id="modalAnswerText">Ask me anything...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div class="job-detail-modal-overlay" id="jobDetailModalOverlay">
+        <div class="job-detail-modal-container">
+            <button class="modal-close-btn" onclick="closeJobDetailModal()">×</button>
+            <h2 class="job-detail-modal-title" id="jobDetailTitle">Job Title</h2>
+            <div class="job-detail-modal-divider"></div>
+            <div class="job-detail-modal-content">
+                <p class="job-detail-description" id="jobDetailDescription">Job description</p>
+                <h3 class="job-detail-section-title">Skills</h3>
+                <div class="job-detail-skills" id="jobDetailSkills"></div>
+            </div>
+            <div class="job-detail-footer">
+                <div class="job-detail-location-pay">
+                    <p class="job-detail-location" id="jobDetailLocation">Location</p>
+                    <p class="job-detail-pay" id="jobDetailPay">Salary</p>
+                </div>
+                <div class="job-detail-apply-section">
+                    <input type="checkbox" class="job-detail-checkbox" id="jobDetailCheckbox">
+                    <span class="job-detail-applied-label">Applied</span>
+                </div>
             </div>
         </div>
     </div>
@@ -663,7 +862,7 @@
     <section class="jobs-section">
         <div class="jobs-cards-container">
             <!-- Placeholder Job Card 1 -->
-            <div class="job-card">
+            <div class="job-card" onclick="openJobDetailModal('Senior Full Stack Developer', 'Join our team to build scalable web applications using modern technologies.', 'React,Node.js,Python', 'San Francisco, CA', '$140,000 - $180,000', window.getComputedStyle(this).backgroundColor)">
                 <div>
                     <h3 class="job-title">Senior Full Stack Developer</h3>
                     <p class="job-description">Join our team to build scalable web applications using modern technologies.</p>
@@ -683,7 +882,7 @@
             </div>
 
             <!-- Placeholder Job Card 2 -->
-            <div class="job-card">
+            <div class="job-card" onclick="openJobDetailModal('Data Science Engineer', 'Build cutting-edge data pipelines and machine learning models with our analytics team.', 'Python,SQL,Machine Learning', 'New York, NY', '$130,000 - $170,000', window.getComputedStyle(this).backgroundColor)">
                 <div>
                     <h3 class="job-title">Data Science Engineer</h3>
                     <p class="job-description">Build cutting-edge data pipelines and machine learning models with our analytics team.</p>
@@ -703,7 +902,7 @@
             </div>
 
             <!-- Placeholder Job Card 3 -->
-            <div class="job-card">
+            <div class="job-card" onclick="openJobDetailModal('DevOps Engineer', 'Manage cloud infrastructure and CI/CD pipelines using containerization and orchestration.', 'Kubernetes,Docker,CI/CD', 'Seattle, WA', '$120,000 - $160,000', window.getComputedStyle(this).backgroundColor)">
                 <div>
                     <h3 class="job-title">DevOps Engineer</h3>
                     <p class="job-description">Manage cloud infrastructure and CI/CD pipelines using containerization and orchestration.</p>
@@ -723,7 +922,7 @@
             </div>
 
             <!-- Placeholder Job Card 4 -->
-            <div class="job-card">
+            <div class="job-card" onclick="openJobDetailModal('Frontend Engineer', 'Create beautiful and responsive user interfaces while collaborating with designers.', 'React,TypeScript,CSS', 'Austin, TX', '$110,000 - $150,000', window.getComputedStyle(this).backgroundColor')">
                 <div>
                     <h3 class="job-title">Frontend Engineer</h3>
                     <p class="job-description">Create beautiful and responsive user interfaces while collaborating with designers.</p>
@@ -856,6 +1055,41 @@
         document.getElementById('modalOverlay').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeModal();
+            }
+        });
+
+        // Job Detail Modal Functions
+        function openJobDetailModal(title, description, skills, location, pay, backgroundColor) {
+            document.getElementById('jobDetailTitle').textContent = title;
+            document.getElementById('jobDetailDescription').textContent = description;
+            document.getElementById('jobDetailLocation').textContent = '📍 ' + location;
+            document.getElementById('jobDetailPay').textContent = '💰 ' + pay;
+            
+            // Set modal background color to match the card
+            document.querySelector('.job-detail-modal-container').style.backgroundColor = backgroundColor;
+            
+            // Populate skills
+            const skillsContainer = document.getElementById('jobDetailSkills');
+            skillsContainer.innerHTML = '';
+            const skillsArray = skills.split(',').map(s => s.trim());
+            skillsArray.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'job-detail-skill-tag';
+                skillTag.textContent = skill;
+                skillsContainer.appendChild(skillTag);
+            });
+            
+            document.getElementById('jobDetailModalOverlay').classList.add('active');
+        }
+
+        function closeJobDetailModal() {
+            document.getElementById('jobDetailModalOverlay').classList.remove('active');
+        }
+
+        // Close job detail modal when clicking outside
+        document.getElementById('jobDetailModalOverlay').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeJobDetailModal();
             }
         });
 
