@@ -419,6 +419,52 @@ def auth_status():
         'user_id': session.get('user_id') if is_authenticated else None
     }), 200
 
+@app.route('/api/execute-sql', methods=['POST'])
+def execute_sql():
+    """API endpoint for executing SQL queries in developer mode."""
+    try:
+        data = request.get_json()
+        query = data.get('query', '').strip()
+        
+        if not query:
+            return jsonify({'error': 'No query provided'}), 400
+        
+        # Execute the query through db module
+        result = db.execute_sql_query(query)
+        
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"Error executing SQL query: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/query-jobs', methods=['POST'])
+def query_jobs():
+    """API endpoint for querying jobs using the query builder."""
+    try:
+        data = request.get_json()
+        filters = data.get('filters', [])
+        
+        if not filters:
+            return jsonify({'error': 'No filters provided'}), 400
+        
+        # Query jobs with filters through db module
+        result = db.query_jobs_with_filters(filters)
+        
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"Error querying jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/get-all-jobs', methods=['GET'])
+def get_all_jobs():
+    """API endpoint to get all jobs from the database."""
+    try:
+        jobs = db.get_all_jobs(include_demo=True)
+        return jsonify({'jobs': jobs}), 200
+    except Exception as e:
+        logger.error(f"Error getting all jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
+
 if __name__ == '__main__':
     # Note: In production, use Gunicorn instead of Flask's development server
     # gunicorn -w 4 -b 0.0.0.0:8000 wsgi:app

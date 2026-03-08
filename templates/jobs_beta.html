@@ -110,9 +110,11 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr));
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
             gap: 25px;
             padding: 0 20px;
+            min-height: 600px;
         }
 
         .job-card {
@@ -258,6 +260,75 @@
             font-size: 18px;
             color: #666;
             font-family: var(--font-text);
+        }
+
+        /* Table Toggle Button */
+        .table-toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            padding-left: 15px;
+            border-left: 2px solid #ddd;
+        }
+
+        .table-toggle-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--color-landing-yellow, #fde008);
+        }
+
+        .table-toggle-label {
+            font-family: var(--font-text);
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            color: #333;
+        }
+
+        .query-results-container {
+            position: relative;
+        }
+
+        /* Pagination Controls */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .pagination-btn {
+            padding: 10px 20px;
+            background-color: var(--color-landing-yellow, #fde008);
+            border: 2px solid #333;
+            border-radius: 25px;
+            font-family: var(--font-text);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-family: var(--font-text);
+            font-size: 16px;
+            color: #333;
+            min-width: 120px;
+            text-align: center;
         }
 
         /* Hamburger Menu */
@@ -828,6 +899,9 @@
         <span class="burger-icon" onclick="toggleBurgerMenu()">☰</span>
     </div>
 
+    <!-- Developer Mode Toggle Button -->
+    <button class="direct-search-toggle" id="directSearchToggle" onclick="toggleDirectSearch()">🔍</button>
+
     <!-- Burger Menu Items -->
     <div class="burger-menu-items" id="burgerMenuItems">
         <a href="{{ url_for('index') }}">Home</a>
@@ -860,86 +934,33 @@
 
     <!-- Jobs Section -->
     <section class="jobs-section">
-        <div class="jobs-cards-container">
-            <!-- Placeholder Job Card 1 -->
-            <div class="job-card" onclick="openJobDetailModal('Senior Full Stack Developer', 'Join our team to build scalable web applications using modern technologies.', 'React,Node.js,Python', 'San Francisco, CA', '$140,000 - $180,000', window.getComputedStyle(this).backgroundColor)">
-                <div>
-                    <h3 class="job-title">Senior Full Stack Developer</h3>
-                    <p class="job-description">Join our team to build scalable web applications using modern technologies.</p>
-                    <div class="job-tags">
-                        <span class="job-tag">React</span>
-                        <span class="job-tag">Node.js</span>
-                        <span class="job-tag">Python</span>
-                    </div>
-                </div>
-                <div class="job-meta">
-                    <div class="job-meta-item">📍 San Francisco, CA</div>
-                    <div class="job-checkbox-wrapper">
-                        <input type="checkbox" class="job-checkbox">
-                        <span class="job-applied-label">Applied</span>
-                    </div>
+        <!-- Query Builder Container -->
+        <div class="query-builder-container" id="queryBuilderContainer">
+            <div class="query-builder-title">Search by Column</div>
+            <div class="filters-list" id="filtersList">
+                <!-- First filter will be added by JavaScript -->
+            </div>
+            <button class="add-filter-btn" onclick="addFilter()">+ Add Filter</button>
+            <div class="query-button-group">
+                <button class="query-send-btn" onclick="executeQuery()" title="Execute Search">Search</button>
+                <button class="query-clear-btn" onclick="clearAllFilters()" title="Clear Filters">Reset</button>
+                <div class="table-toggle-wrapper" id="tableToggleWrapper" style="display: none;">
+                    <input type="checkbox" id="tableToggleCheckbox" class="table-toggle-checkbox" onchange="toggleResultsTable()">
+                    <label for="tableToggleCheckbox" class="table-toggle-label">📊 View Raw Data</label>
                 </div>
             </div>
+            <div class="query-results-container" id="queryResultsContainer" style="display: none; margin-top: 30px;"></div>
+        </div>
 
-            <!-- Placeholder Job Card 2 -->
-            <div class="job-card" onclick="openJobDetailModal('Data Science Engineer', 'Build cutting-edge data pipelines and machine learning models with our analytics team.', 'Python,SQL,Machine Learning', 'New York, NY', '$130,000 - $170,000', window.getComputedStyle(this).backgroundColor)">
-                <div>
-                    <h3 class="job-title">Data Science Engineer</h3>
-                    <p class="job-description">Build cutting-edge data pipelines and machine learning models with our analytics team.</p>
-                    <div class="job-tags">
-                        <span class="job-tag">Python</span>
-                        <span class="job-tag">SQL</span>
-                        <span class="job-tag">Machine Learning</span>
-                    </div>
-                </div>
-                <div class="job-meta">
-                    <div class="job-meta-item">📍 New York, NY</div>
-                    <div class="job-checkbox-wrapper">
-                        <input type="checkbox" class="job-checkbox">
-                        <span class="job-applied-label">Applied</span>
-                    </div>
-                </div>
-            </div>
+        <div class="jobs-cards-container" id="jobsCardsContainer">
+            <!-- Jobs will be loaded here dynamically -->
+        </div>
 
-            <!-- Placeholder Job Card 3 -->
-            <div class="job-card" onclick="openJobDetailModal('DevOps Engineer', 'Manage cloud infrastructure and CI/CD pipelines using containerization and orchestration.', 'Kubernetes,Docker,CI/CD', 'Seattle, WA', '$120,000 - $160,000', window.getComputedStyle(this).backgroundColor)">
-                <div>
-                    <h3 class="job-title">DevOps Engineer</h3>
-                    <p class="job-description">Manage cloud infrastructure and CI/CD pipelines using containerization and orchestration.</p>
-                    <div class="job-tags">
-                        <span class="job-tag">Kubernetes</span>
-                        <span class="job-tag">Docker</span>
-                        <span class="job-tag">CI/CD</span>
-                    </div>
-                </div>
-                <div class="job-meta">
-                    <div class="job-meta-item">📍 Seattle, WA</div>
-                    <div class="job-checkbox-wrapper">
-                        <input type="checkbox" class="job-checkbox">
-                        <span class="job-applied-label">Applied</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Placeholder Job Card 4 -->
-            <div class="job-card" onclick="openJobDetailModal('Frontend Engineer', 'Create beautiful and responsive user interfaces while collaborating with designers.', 'React,TypeScript,CSS', 'Austin, TX', '$110,000 - $150,000', window.getComputedStyle(this).backgroundColor')">
-                <div>
-                    <h3 class="job-title">Frontend Engineer</h3>
-                    <p class="job-description">Create beautiful and responsive user interfaces while collaborating with designers.</p>
-                    <div class="job-tags">
-                        <span class="job-tag">React</span>
-                        <span class="job-tag">TypeScript</span>
-                        <span class="job-tag">CSS</span>
-                    </div>
-                </div>
-                <div class="job-meta">
-                    <div class="job-meta-item">📍 Austin, TX</div>
-                    <div class="job-checkbox-wrapper">
-                        <input type="checkbox" class="job-checkbox">
-                        <span class="job-applied-label">Applied</span>
-                    </div>
-                </div>
-            </div>
+        <!-- Pagination Controls -->
+        <div class="pagination-container" id="paginationContainer" style="display: none;">
+            <button class="pagination-btn" id="prevBtn" onclick="previousPage()">← Previous</button>
+            <span class="pagination-info" id="pageInfo">Page 1</span>
+            <button class="pagination-btn" id="nextBtn" onclick="nextPage()">Next →</button>
         </div>
     </section>
 
@@ -1113,11 +1134,392 @@
             '#48DBFB'  // Sky Blue
         ];
 
-        // Assign random colors to job cards
-        document.querySelectorAll('.job-card').forEach((card, index) => {
-            const randomColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-            card.style.backgroundColor = randomColor;
+        // Initialize page - load all jobs on startup
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllJobs();
         });
+
+        // Also load jobs if script runs after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadAllJobs);
+        } else {
+            loadAllJobs();
+        }
+
+        // Direct Search Functions
+        let directSearchActive = false;
+        let filterCount = 0;
+        let allJobs = [];
+
+        // Pagination variables
+        let currentPage = 1;
+        const JOBS_PER_PAGE = 6;
+        let totalPages = 1;
+
+        const COLUMN_OPTIONS = [
+            { value: 'title', label: 'Title' },
+            { value: 'description', label: 'Description' },
+            { value: 'skills', label: 'Skills' },
+            { value: 'location', label: 'Location' },
+            { value: 'pay', label: 'Salary' }
+        ];
+
+        // Load all jobs on page init
+        function loadAllJobs() {
+            fetch('/api/get-all-jobs')
+            .then(response => response.json())
+            .then(data => {
+                if (data.jobs) {
+                    allJobs = data.jobs;
+                    displayJobsInCards(allJobs);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading jobs:', error);
+                // Fall back to demo data if available
+            });
+        }
+
+        function displayJobsInCards(jobs, pageNumber = 1) {
+            const container = document.getElementById('jobsCardsContainer');
+            const paginationContainer = document.getElementById('paginationContainer');
+            container.innerHTML = '';
+
+            if (jobs.length === 0) {
+                container.innerHTML = '<div style="padding: 40px; text-align: center; color: #999;">No jobs found</div>';
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            // Calculate pagination
+            totalPages = Math.ceil(jobs.length / JOBS_PER_PAGE);
+            currentPage = Math.max(1, Math.min(pageNumber, totalPages));
+            
+            const startIndex = (currentPage - 1) * JOBS_PER_PAGE;
+            const endIndex = startIndex + JOBS_PER_PAGE;
+            const jobsOnPage = jobs.slice(startIndex, endIndex);
+
+            const colorPalette = [
+                '#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181',
+                '#AA96DA', '#FCBAD3', '#A8D8EA', '#FFD93D', '#6BCB77',
+                '#4D96FF', '#FF6348', '#A29BFE', '#FFA502', '#48DBFB'
+            ];
+
+            jobsOnPage.forEach((job, index) => {
+                const colorIndex = (startIndex + index) % colorPalette.length;
+                const randomColor = colorPalette[colorIndex];
+                
+                const card = document.createElement('div');
+                card.className = 'job-card';
+                card.style.backgroundColor = randomColor;
+                card.onclick = () => openJobDetailModal(
+                    job.title,
+                    job.description,
+                    job.skills || 'unknown',
+                    job.location,
+                    job.pay,
+                    randomColor,
+                    job.link
+                );
+
+                const skillsDisplay = job.skills ? job.skills.split(',').map(s => s.trim()).slice(0, 3).join(', ') : 'unknown';
+                
+                let linkHtml = '';
+                if (job.link) {
+                    linkHtml = `<div style="margin-top: 10px; font-size: 14px;"><a href="${escapeHtml(job.link)}" target="_blank" style="color: #0066cc; text-decoration: underline;">🔗 View Posting</a></div>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <h3 class="job-title">${escapeHtml(job.title)}</h3>
+                        <p class="job-description">${escapeHtml(job.description || '')}</p>
+                        <div style="font-size: 13px; color: #666; margin: 8px 0;">
+                            <strong>Skills:</strong> ${escapeHtml(skillsDisplay)}
+                            ${linkHtml}
+                        </div>
+                    </div>
+                    <div class="job-meta">
+                        <div class="job-meta-item">📍 ${escapeHtml(job.location)}</div>
+                        <div class="job-checkbox-wrapper">
+                            <input type="checkbox" class="job-checkbox">
+                            <span class="job-applied-label">Applied</span>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            // Update pagination controls
+            updatePaginationControls();
+        }
+
+        function updatePaginationControls() {
+            const paginationContainer = document.getElementById('paginationContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageInfo = document.getElementById('pageInfo');
+
+            if (totalPages > 1) {
+                paginationContainer.style.display = 'flex';
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+            } else {
+                paginationContainer.style.display = 'none';
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayJobsInCards(allJobs, currentPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayJobsInCards(allJobs, currentPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function toggleDirectSearch() {
+            directSearchActive = !directSearchActive;
+            document.getElementById('queryBuilderContainer').classList.toggle('active', directSearchActive);
+            
+            // Initialize first filter if turning on
+            if (directSearchActive && filterCount === 0) {
+                addFilter();
+            }
+            
+            // Clear previous results when toggling
+            if (!directSearchActive) {
+                currentPage = 1;
+                document.getElementById('filtersList').innerHTML = '';
+                document.getElementById('queryResultsContainer').innerHTML = '';
+                document.getElementById('queryResultsContainer').style.display = 'none';
+                filterCount = 0;
+                displayJobsInCards(allJobs, 1);
+            }
+        }
+
+        function addFilter() {
+            const filtersList = document.getElementById('filtersList');
+            const filterId = `filter-${filterCount}`;
+            
+            const filterRow = document.createElement('div');
+            filterRow.className = 'filter-row';
+            filterRow.id = filterId;
+            
+            const columnSelect = document.createElement('select');
+            columnSelect.className = 'filter-column-select';
+            columnSelect.name = `column-${filterCount}`;
+            
+            COLUMN_OPTIONS.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option.value;
+                opt.textContent = option.label;
+                columnSelect.appendChild(opt);
+            });
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'filter-input';
+            input.name = `value-${filterCount}`;
+            input.placeholder = 'Enter search term...';
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    executeQuery();
+                }
+            };
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-filter-btn';
+            removeBtn.innerHTML = '✕';
+            removeBtn.onclick = () => removeFilter(filterId);
+            removeBtn.type = 'button';
+            
+            filterRow.appendChild(columnSelect);
+            filterRow.appendChild(input);
+            
+            // Only show remove button if there are multiple filters
+            if (filterCount > 0) {
+                filterRow.appendChild(removeBtn);
+            }
+            
+            filtersList.appendChild(filterRow);
+            filterCount++;
+            
+            input.focus();
+        }
+
+        function removeFilter(filterId) {
+            const filterElement = document.getElementById(filterId);
+            if (filterElement) {
+                filterElement.remove();
+            }
+        }
+
+        function executeQuery() {
+            const filtersList = document.getElementById('filtersList');
+            const filterRows = filtersList.querySelectorAll('.filter-row');
+            
+            if (filterRows.length === 0) {
+                showQueryError('Please add at least one filter');
+                return;
+            }
+            
+            // Build filters array from form inputs
+            const filters = [];
+            filterRows.forEach(row => {
+                const columnSelect = row.querySelector('select');
+                const input = row.querySelector('input');
+                
+                const column = columnSelect.value;
+                const value = input.value.trim();
+                
+                if (value) {
+                    filters.push({ column, value });
+                }
+            });
+            
+            if (filters.length === 0) {
+                showQueryError('Please enter at least one search term');
+                return;
+            }
+            
+            const resultsContainer = document.getElementById('queryResultsContainer');
+            resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; font-family: var(--font-system); color: #999;">Searching...</div>';
+            resultsContainer.style.display = 'block';
+
+            // Send filters to backend
+            fetch('/api/query-jobs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ filters: filters })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showQueryError(data.error);
+                } else {
+                    displayQueryResults(data.results, data.columns);
+                    // Reset pagination when search is performed
+                    currentPage = 1;
+                }
+            })
+            .catch(error => {
+                showQueryError('Failed to execute search: ' + error.message);
+            });
+        }
+
+        function displayQueryResults(results, columns) {
+            const resultsContainer = document.getElementById('queryResultsContainer');
+            const tableToggleWrapper = document.getElementById('tableToggleWrapper');
+            const tableToggleCheckbox = document.getElementById('tableToggleCheckbox');
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="query-no-results">No results found</div>';
+                resultsContainer.style.display = 'block';
+                tableToggleWrapper.style.display = 'none';
+                // Also clear the cards when no results
+                document.getElementById('jobsCardsContainer').innerHTML = '<div style="padding: 40px; text-align: center; color: #999;">No jobs found</div>';
+                document.getElementById('paginationContainer').style.display = 'none';
+                return;
+            }
+
+            // Display filtered results in cards with pagination
+            displayJobsInCards(results, 1);
+
+            // Show table toggle and build table
+            tableToggleWrapper.style.display = 'flex';
+            tableToggleCheckbox.checked = false;
+            
+            let html = '<div id="resultsTableWrapper" style="display: none;">';
+            html += '<table class="query-results-table"><thead><tr>';
+            
+            // Add headers
+            columns.forEach(col => {
+                html += '<th>' + escapeHtml(col) + '</th>';
+            });
+            html += '</tr></thead><tbody>';
+
+            // Add rows
+            results.forEach(row => {
+                html += '<tr>';
+                columns.forEach(col => {
+                    const value = row[col];
+                    html += '<td>' + escapeHtml(JSON.stringify(value)) + '</td>';
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            html += '</div>';
+            resultsContainer.innerHTML = html;
+            resultsContainer.style.display = 'block';
+        }
+
+        function toggleResultsTable() {
+            const checkbox = document.getElementById('tableToggleCheckbox');
+            const wrapper = document.getElementById('resultsTableWrapper');
+            
+            if (checkbox.checked) {
+                wrapper.style.display = 'block';
+            } else {
+                wrapper.style.display = 'none';
+            }
+        }
+
+        function showQueryError(error) {
+            const resultsContainer = document.getElementById('queryResultsContainer');
+            resultsContainer.innerHTML = '<div class="query-error-message"><strong>Error:</strong> ' + escapeHtml(error) + '</div>';
+            resultsContainer.style.display = 'block';
+        }
+
+        function clearAllFilters() {
+            document.getElementById('filtersList').innerHTML = '';
+            document.getElementById('queryResultsContainer').innerHTML = '';
+            document.getElementById('queryResultsContainer').style.display = 'none';
+            filterCount = 0;
+            currentPage = 1;
+            displayJobsInCards(allJobs, 1);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Update openJobDetailModal to accept link parameter
+        function openJobDetailModal(title, description, skills, location, pay, backgroundColor, link) {
+            document.getElementById('jobDetailTitle').textContent = title;
+            document.getElementById('jobDetailDescription').textContent = description;
+            document.getElementById('jobDetailLocation').textContent = '📍 ' + location;
+            document.getElementById('jobDetailPay').textContent = '💰 ' + pay;
+            
+            // Set modal background color to match the card
+            document.querySelector('.job-detail-modal-container').style.backgroundColor = backgroundColor;
+            
+            // Populate skills
+            const skillsContainer = document.getElementById('jobDetailSkills');
+            skillsContainer.innerHTML = '';
+            const skillsArray = skills.split(',').map(s => s.trim());
+            skillsArray.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'job-detail-skill-tag';
+                skillTag.textContent = skill;
+                skillsContainer.appendChild(skillTag);
+            });
+            
+            document.getElementById('jobDetailModalOverlay').classList.add('active');
+        }
     </script>
 
 
