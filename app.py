@@ -40,29 +40,29 @@ def index():
 
 @app.route('/jobs')
 def jobs():
-    """Display jobs - user's own jobs if authenticated, demo jobs if not."""
+    """Main jobs page with Direct Search and Gemini AI analysis."""
     logger.info("Jobs page accessed")
+    is_authenticated = auth.is_authenticated(session)
+    return render_template('jobs_beta.html', is_authenticated=is_authenticated)
+
+@app.route('/jobs-classic')
+def jobs_classic():
+    """Legacy jobs page - kept for backward compatibility."""
+    logger.info("Classic jobs page accessed")
     is_authenticated = auth.is_authenticated(session)
     try:
         if is_authenticated:
             user_id = session.get('user_id')
-            jobs = db.get_user_jobs(user_id)
-            logger.info(f"Retrieved {len(jobs)} jobs for user: {user_id}")
-            return render_template('jobs.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=True)
+            jobs_list = db.get_user_jobs(user_id)
+            logger.info(f"Retrieved {len(jobs_list)} jobs for user: {user_id}")
+            return render_template('jobs.html', jobs=jobs_list, is_authenticated=is_authenticated, user_jobs=True)
         else:
-            jobs = db.get_demo_jobs()
-            logger.info(f"Retrieved {len(jobs)} demo jobs for unauthenticated user")
-            return render_template('jobs.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=False)
+            jobs_list = db.get_demo_jobs()
+            logger.info(f"Retrieved {len(jobs_list)} demo jobs for unauthenticated user")
+            return render_template('jobs.html', jobs=jobs_list, is_authenticated=is_authenticated, user_jobs=False)
     except Exception as e:
         logger.error(f"Error loading jobs: {str(e)}", exc_info=True)
         return render_template('error.html', message='Error loading job data'), 500
-
-@app.route('/jobsbeta')
-def jobsbeta():
-    """Beta jobs viewing page with new UI design."""
-    logger.info("Jobs Beta page accessed")
-    is_authenticated = auth.is_authenticated(session)
-    return render_template('jobs_beta.html', is_authenticated=is_authenticated)
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_query():

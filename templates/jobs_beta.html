@@ -905,8 +905,8 @@
     <!-- Burger Menu Items -->
     <div class="burger-menu-items" id="burgerMenuItems">
         <a href="{{ url_for('index') }}">Home</a>
-        <a href="#">Add</a>
-        <a href="#">Ask</a>
+        <a href="{{ url_for('jobs', _anchor='add') }}">Add</a>
+        <a href="#" onclick="openModal(); return false;">Ask</a>
     </div>
 
     <!-- Search Container -->
@@ -1046,21 +1046,51 @@
                 const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
                 answerText.textContent = randomMessage;
                 
-                // Set minimum 2.5 second timer before showing final answer
+                // Call Gemini API
                 const startTime = Date.now();
-                const minimumWaitTime = 2500; // 2.5 seconds in milliseconds
+                const minimumWaitTime = 1500; // 1.5 seconds minimum for better UX
                 
-                // Simulate API call (in real scenario, this would be an actual API)
-                setTimeout(() => {
+                fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: input
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Calculate elapsed time to ensure minimum wait
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minimumWaitTime - elapsedTime);
+                    
+                    setTimeout(() => {
+                        if (data.success) {
+                            // Display Gemini analysis
+                            answerText.innerHTML = `<div style="line-height: 1.6; color: #333;">${escapeHtml(data.analysis)}</div>`;
+                            
+                            // Also display filtered jobs count if available
+                            if (data.jobs && data.jobs.length > 0) {
+                                const jobCount = document.createElement('div');
+                                jobCount.style.cssText = 'margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 14px; color: #666;';
+                                jobCount.textContent = `Found ${data.jobs.length} matching job(s)`;
+                                answerText.appendChild(jobCount);
+                            }
+                        } else {
+                            answerText.textContent = `Error: ${escapeHtml(data.error || 'Unknown error occurred')}`;
+                        }
+                    }, remainingTime);
+                })
+                .catch(error => {
                     // Calculate elapsed time
                     const elapsedTime = Date.now() - startTime;
                     const remainingTime = Math.max(0, minimumWaitTime - elapsedTime);
                     
-                    // Wait any remaining time before showing answer
                     setTimeout(() => {
-                        answerText.textContent = 'Generic answer 123...';
+                        answerText.textContent = `Error: ${escapeHtml(error.message || 'Failed to connect to Gemini API')}`;
                     }, remainingTime);
-                }, 0); // Simulate API returning immediately
+                });
                 
                 document.getElementById('modalSearchInput').value = '';
             }
