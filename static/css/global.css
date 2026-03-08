@@ -330,34 +330,7 @@ body.dark-mode .jobs-cards-container {
     opacity: 1;
 }
 
-/* ===========================================
-   Query Builder Interface
-   =========================================== */
-.query-builder-container {
-    display: none;
-    margin-bottom: 40px;
-    padding: 25px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
-.query-builder-container.active {
-    display: block;
-}
-
-.query-builder-title {
-    font-family: var(--font-title, 'Bungee', cursive);
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.filters-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 20px;
 }
 
 .filter-row {

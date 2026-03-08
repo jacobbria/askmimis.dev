@@ -852,6 +852,35 @@
             color: #666;
         }
 
+        /* Query Builder Interface */
+        .query-builder-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto 40px auto;
+            padding: 25px 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .query-builder-container.active {
+            display: block;
+        }
+
+        .query-builder-title {
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .filters-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -1164,15 +1193,29 @@
             '#48DBFB'  // Sky Blue
         ];
 
-        // Initialize page - load all jobs on startup
+        // Initialize page - check guest mode and load appropriate jobs
         document.addEventListener('DOMContentLoaded', function() {
-            loadAllJobs();
+            checkAccessAndLoadJobs();
         });
 
         // Also load jobs if script runs after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadAllJobs);
+            document.addEventListener('DOMContentLoaded', checkAccessAndLoadJobs);
         } else {
+            checkAccessAndLoadJobs();
+        }
+
+        // Check if user has access (authenticated or guest) and load jobs
+        function checkAccessAndLoadJobs() {
+            const isAuthenticated = {{ 'true' if is_authenticated else 'false' }};
+            const guestMode = localStorage.getItem('guest_mode') === 'true';
+            
+            // If not authenticated and not guest, redirect to login
+            if (!isAuthenticated && !guestMode) {
+                window.location.href = '/login';
+                return;
+            }
+            
             loadAllJobs();
         }
 
@@ -1196,12 +1239,24 @@
 
         // Load all jobs on page init
         function loadAllJobs() {
-            fetch('/api/get-all-jobs')
+            const isAuthenticated = {{ 'true' if is_authenticated else 'false' }};
+            const guestMode = localStorage.getItem('guest_mode') === 'true';
+            
+            // Determine which endpoint to use
+            let endpoint = '/api/get-demo-jobs';  // Default to demo jobs
+            if (isAuthenticated) {
+                endpoint = '/api/get-user-jobs';  // Authenticated users get their own jobs
+            }
+            
+            fetch(endpoint)
             .then(response => response.json())
             .then(data => {
                 if (data.jobs) {
                     allJobs = data.jobs;
                     displayJobsInCards(allJobs);
+                } else if (response.status === 401) {
+                    // Session expired, redirect to login
+                    window.location.href = '/login';
                 }
             })
             .catch(error => {

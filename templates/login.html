@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Ask MIMIS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Bungee&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Amatic SC', cursive;
+            background-color: #a260a5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 60px 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: visible;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #000000;
+            border-radius: 20px;
+            pointer-events: none;
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+        }
+
+        .login-container:hover::before {
+            animation: drawBorder 1s ease-in-out forwards;
+        }
+
+        @keyframes drawBorder {
+            0% {
+                clip-path: inset(0 100% 100% 0);
+            }
+            25% {
+                clip-path: inset(0 0 100% 0);
+            }
+            50% {
+                clip-path: inset(0 0 0 0);
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        .login-logo {
+            font-family: 'Bungee', cursive;
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-title {
+            font-family: 'Bungee', cursive;
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 50px;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-btn-primary {
+            background: #a260a5;
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Amatic SC', cursive;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(162, 96, 165, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(162, 96, 165, 0.5);
+        }
+
+        .login-btn-secondary {
+            background: #f5f5f5;
+            color: #667eea;
+            padding: 18px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Amatic SC', cursive;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            margin: 40px 0;
+            font-size: 16px;
+            color: #999;
+            position: relative;
+            z-index: 1;
+        }
+
+        .guest-info {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .guest-info strong {
+            color: #333;
+        }
+
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 40px 25px;
+            }
+
+            .login-logo {
+                font-size: 36px;
+            }
+
+            .login-title {
+                font-size: 28px;
+            }
+
+            .login-subtitle {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-logo">MIMIS</div>
+        <h1 class="login-title">Welcome Back!</h1>
+        <p class="login-subtitle">Sign in to manage your job postings or continue as a guest to browse jobs.</p>
+
+        <div class="login-button-group">
+            <button class="login-btn-primary" onclick="handleLogin()">
+                Login
+            </button>
+            <button class="login-btn-secondary" onclick="handleGuest()">
+                👤 Continue as Guest
+            </button>
+        </div>
+
+        <div class="divider">or</div>
+
+        <div class="guest-info">
+            <p><strong>👤 Guest Mode:</strong> Browse demo job listings and use the AI search feature. No account required.</p>
+            <p style="margin-top: 10px;"><strong>🔐 Authenticated:</strong> Post new jobs, manage your listings, and access all features.</p>
+        </div>
+    </div>
+
+    <script>
+        function handleLogin() {
+            // Redirect to the authentication/registration page
+            // If you have a proper auth endpoint, use that
+            // Otherwise redirect back to index which will handle auth
+            window.location.href = '/';
+        }
+
+        function handleGuest() {
+            // Set guest mode in localStorage
+            localStorage.setItem('guest_mode', 'true');
+            // Redirect to jobs page
+            window.location.href = '/jobs';
+        }
+    </script>
+</body>
+</html>

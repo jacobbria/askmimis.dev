@@ -38,12 +38,24 @@ def index():
     is_authenticated = auth.is_authenticated(session)
     return render_template('index.html', is_authenticated=is_authenticated)
 
+@app.route('/login')
+def login():
+    """Login page with authentication and guest options."""
+    is_authenticated = auth.is_authenticated(session)
+    if is_authenticated:
+        # Already logged in, redirect to jobs
+        return redirect(url_for('jobs'))
+    return render_template('login.html')
+
 @app.route('/jobs')
 def jobs():
     """Main jobs page with Direct Search and Gemini AI analysis."""
     logger.info("Jobs page accessed")
     is_authenticated = auth.is_authenticated(session)
-    return render_template('jobs_beta.html', is_authenticated=is_authenticated)
+    # Jobs page requires authentication OR guest mode
+    # Guest mode verification will be done on frontend via localStorage
+    user_id = session.get('user_id') if is_authenticated else None
+    return render_template('jobs_beta.html', is_authenticated=is_authenticated, user_id=user_id)
 
 @app.route('/jobs-classic')
 def jobs_classic():
@@ -112,6 +124,34 @@ def analyze_query():
     except Exception as e:
         logger.error(f"Error processing analysis query: {str(e)}", exc_info=True)
         return jsonify({'error': 'Analysis failed: ' + str(e)}), 500
+
+@app.route('/api/get-user-jobs', methods=['GET'])
+def get_user_jobs_api():
+    """API endpoint to get jobs posted by the authenticated user."""
+    try:
+        is_authenticated = auth.is_authenticated(session)
+        if not is_authenticated:
+            logger.warning("Unauthorized attempt to access user jobs")
+            return jsonify({'error': 'Not authenticated', 'jobs': []}), 401
+        
+        user_id = session.get('user_id')
+        jobs = db.get_user_jobs(user_id)
+        logger.info(f"Retrieved {len(jobs)} jobs for authenticated user: {user_id}")
+        return jsonify({'jobs': jobs}), 200
+    except Exception as e:
+        logger.error(f"Error getting user jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}', 'jobs': []}), 500
+
+@app.route('/api/get-demo-jobs', methods=['GET'])
+def get_demo_jobs_api():
+    """API endpoint to get demo jobs for guests."""
+    try:
+        jobs = db.get_demo_jobs()
+        logger.info(f"Retrieved {len(jobs)} demo jobs for guest user")
+        return jsonify({'jobs': jobs}), 200
+    except Exception as e:
+        logger.error(f"Error getting demo jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}', 'jobs': []}), 500
 
 @app.route('/data')
 def data_options():
