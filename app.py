@@ -87,8 +87,8 @@ def analyze_query():
         
         logger.info(f"Parsed filters: {parsed_filters}")
         
-        # Get all jobs
-        all_jobs = db.get_all_jobs()
+        # Get all jobs (including demo jobs for consistency with other search endpoints)
+        all_jobs = db.get_all_jobs(include_demo=True)
         logger.info(f"Retrieved {len(all_jobs)} total jobs from database")
         
         # Filter jobs based on parsed criteria
