@@ -1,377 +1,350 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job - askMimis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block content %}
-<div class="container review-job-container">
-    <div class="review-header">
-        <h1>✅ Review Job Details</h1>
-        <p>AI extracted the following information. Please verify and edit as needed.</p>
-    </div>
+        body {
+            background: var(--color-landing-purple);
+            min-height: 100vh;
+            font-family: var(--font-text);
+        }
 
-    <form id="reviewForm" class="review-form">
-        <div class="form-row">
-            <div class="form-group full-width">
-                <label for="title">Job Title *</label>
-                <input 
-                    type="text" 
-                    id="title" 
-                    name="title" 
-                    required
-                    class="form-input"
-                    placeholder="e.g., Senior Software Engineer">
-            </div>
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .content {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* Title Section */
+        .title-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .title-section h1 {
+            font-family: var(--font-title);
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Input Section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 14px 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-text);
+            font-size: 16px;
+            background: white;
+            color: var(--color-text-dark);
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        /* Button Section */
+        .button-section {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 36px;
+            border: none;
+            border-radius: 6px;
+            font-family: var(--font-text);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-save {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cancel {
+            background: white;
+            color: var(--color-landing-purple);
+            border: 2px solid white;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .title-section h1 {
+                font-size: 36px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-section {
+                flex-direction: column-reverse;
+                gap: 12px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .content {
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title-section h1 {
+                font-size: 28px;
+            }
+
+            .page-wrapper {
+                padding: 16px;
+            }
+
+            .content {
+                gap: 24px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+{% include 'components/navbar.html' %}
+
+<div class="page-wrapper">
+    <div class="content">
+        <!-- Title Section -->
+        <div class="title-section">
+            <h1>EDIT A JOB</h1>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="company">Company *</label>
-                <input 
-                    type="text" 
-                    id="company" 
-                    name="company" 
-                    required
-                    class="form-input"
-                    placeholder="e.g., TechCorp Inc.">
-            </div>
+        <!-- Input Section -->
+        <div class="input-section">
+            <form id="editJobForm">
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="title">Job Title</label>
+                        <input 
+                            type="text" 
+                            id="title" 
+                            name="title" 
+                            placeholder="Enter job title..."
+                            required>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="location">Location *</label>
-                <input 
-                    type="text" 
-                    id="location" 
-                    name="location" 
-                    required
-                    class="form-input"
-                    placeholder="e.g., San Francisco, CA or Remote">
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="company">Company</label>
+                        <input 
+                            type="text" 
+                            id="company" 
+                            name="company" 
+                            placeholder="Enter company name..."
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            placeholder="Enter location..."
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pay">Salary/Pay</label>
+                        <input 
+                            type="text" 
+                            id="pay" 
+                            name="pay" 
+                            placeholder="Enter salary range...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skills">Required Skills</label>
+                        <input 
+                            type="text" 
+                            id="skills" 
+                            name="skills" 
+                            placeholder="Enter required skills...">
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label for="description">Job Description</label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            placeholder="Enter job description..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Button Section -->
+                <div class="button-section">
+                    {% set button_text = 'CANCEL' %}
+                    {% set button_href = '/' %}
+                    {% set button_size = 'medium' %}
+                    {% include 'components/standard_button.html' %}
+                    <button type="submit" class="btn btn-medium btn-save">SAVE</button>
+                </div>
+            </form>
         </div>
-
-        <div class="form-row">
-            <div class="form-group full-width">
-                <label for="pay">Salary/Pay</label>
-                <input 
-                    type="text" 
-                    id="pay" 
-                    name="pay"
-                    class="form-input"
-                    placeholder="e.g., $120,000 - $160,000 or Competitive">
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group full-width">
-                <label for="skills">Important Skills & Keywords</label>
-                <input 
-                    type="text" 
-                    id="skills" 
-                    name="skills"
-                    class="form-input"
-                    placeholder="e.g., Python, AWS, Docker, Kubernetes">
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group full-width">
-                <label for="link">Job Posting URL</label>
-                <input 
-                    type="url" 
-                    id="link" 
-                    name="link"
-                    class="form-input"
-                    placeholder="e.g., https://company.com/jobs/12345">
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group full-width">
-                <label for="description">Job Description *</label>
-                <textarea 
-                    id="description" 
-                    name="description" 
-                    required
-                    class="form-textarea"
-                    placeholder="Brief description of the role and responsibilities..."></textarea>
-            </div>
-        </div>
-
-        <div id="validationMessage" class="validation-message" style="display: none;"></div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-                <span id="submitText">Post Job</span>
-                <span id="savingSpinner" style="display: none;">
-                    <i class="spinner"></i> Saving...
-                </span>
-            </button>
-            <button type="button" class="btn btn-secondary" onclick="goBack()">Back to Edit</button>
-            <a href="/jobs" class="btn btn-secondary">View Jobs</a>
-        </div>
-    </form>
-
-    <div class="ai-note">
-        💡 <strong>Tip:</strong> This information was auto-extracted by AI. Please review carefully and correct any errors before posting.
     </div>
 </div>
 
-<style>
-.review-job-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-}
-
-.review-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.review-header h1 {
-    color: #333;
-    margin-bottom: 10px;
-    font-size: 2.5em;
-}
-
-.review-header p {
-    color: #666;
-    font-size: 1.1em;
-}
-
-.review-form {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.form-row.full-width {
-    grid-template-columns: 1fr;
-}
-
-.form-group.full-width {
-    grid-column: 1 / -1;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #333;
-}
-
-.form-input,
-.form-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 1em;
-    transition: border-color 0.3s;
-}
-
-.form-input:focus,
-.form-textarea:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-textarea {
-    min-height: 150px;
-    resize: vertical;
-}
-
-.form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-primary {
-    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.btn-secondary {
-    background: #f0f0f0;
-    color: #333;
-}
-
-.btn-secondary:hover {
-    background: #e0e0e0;
-}
-
-.validation-message {
-    background: #fee;
-    border: 1px solid #fcc;
-    color: #c33;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-}
-
-.validation-message.success {
-    background: #efe;
-    border-color: #cfc;
-    color: #3c3;
-}
-
-.ai-note {
-    background: #f0f7ff;
-    border-left: 4px solid #667eea;
-    padding: 15px;
-    margin-top: 30px;
-    border-radius: 4px;
-    color: #333;
-}
-
-.spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 3px solid white;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-@media (max-width: 600px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
 <script>
-// Load parsed job data from session storage
-window.addEventListener('load', () => {
-    const parsedJob = sessionStorage.getItem('parsedJob');
-    
-    if (!parsedJob) {
-        window.location.href = '/jobs/add';
-        return;
-    }
-    
-    const job = JSON.parse(parsedJob);
-    
-    // Populate form fields
-    document.getElementById('title').value = job.title || '';
-    document.getElementById('company').value = job.company || '';
-    document.getElementById('location').value = job.location || '';
-    document.getElementById('pay').value = job.pay || '';
-    document.getElementById('skills').value = job.skills || '';
-    document.getElementById('description').value = job.description || '';
-    document.getElementById('link').value = job.link || '';
-    
-    console.log('Loaded job data:', job);
-});
+    // Load data from sessionStorage on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const jobDataStr = sessionStorage.getItem('parsedJobData');
+        
+        if (jobDataStr) {
+            try {
+                const jobData = JSON.parse(jobDataStr);
+                populateForm(jobData);
+            } catch (e) {
+                console.error('Error parsing job data from sessionStorage:', e);
+            }
+        }
+    });
 
-document.getElementById('reviewForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = {
-        title: document.getElementById('title').value.trim(),
-        company: document.getElementById('company').value.trim(),
-        location: document.getElementById('location').value.trim(),
-        pay: document.getElementById('pay').value.trim(),
-        skills: document.getElementById('skills').value.trim() || 'unknown',
-        description: document.getElementById('description').value.trim(),
-        link: document.getElementById('link').value.trim()
-    };
-    
-    // Validate required fields
-    if (!formData.title || !formData.company || !formData.location || !formData.description) {
-        showMessage('Please fill in all required fields', false);
-        return;
+    function populateForm(jobData) {
+        if (jobData.title) document.getElementById('title').value = jobData.title;
+        if (jobData.company) document.getElementById('company').value = jobData.company;
+        if (jobData.location) document.getElementById('location').value = jobData.location;
+        if (jobData.pay) document.getElementById('pay').value = jobData.pay;
+        if (jobData.skills) document.getElementById('skills').value = jobData.skills;
+        if (jobData.description) document.getElementById('description').value = jobData.description;
     }
-    
-    // Show saving state
-    document.getElementById('submitText').style.display = 'none';
-    document.getElementById('savingSpinner').style.display = 'inline';
-    document.querySelector('.btn-primary').disabled = true;
-    
-    try {
-        const response = await fetch('/jobs/save', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok || data.error) {
-            showMessage(data.message || 'Failed to save job', false);
-            resetForm();
+
+    function cancelEdit() {
+        window.location.href = '/';
+    }
+
+    // Handle form submission
+    document.getElementById('editJobForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const jobData = {
+            title: document.getElementById('title').value.trim(),
+            company: document.getElementById('company').value.trim(),
+            location: document.getElementById('location').value.trim(),
+            pay: document.getElementById('pay').value.trim(),
+            skills: document.getElementById('skills').value.trim(),
+            description: document.getElementById('description').value.trim()
+        };
+
+        // Validate required fields
+        if (!jobData.title || !jobData.company || !jobData.location) {
+            alert('Please fill in Title, Company, and Location fields.');
             return;
         }
-        
-        // Clear session data and redirect
-        sessionStorage.removeItem('parsedJob');
-        showMessage('Job posted successfully! Redirecting...', true);
-        
-        setTimeout(() => {
-            window.location.href = '/jobs';
-        }, 1500);
-        
-    } catch (error) {
-        showMessage('Error saving job: ' + error.message, false);
-        resetForm();
-    }
-});
 
-function showMessage(message, isSuccess) {
-    const msgDiv = document.getElementById('validationMessage');
-    msgDiv.textContent = message;
-    msgDiv.className = isSuccess ? 'validation-message success' : 'validation-message';
-    msgDiv.style.display = 'block';
-}
-
-function resetForm() {
-    document.getElementById('submitText').style.display = 'inline';
-    document.getElementById('savingSpinner').style.display = 'none';
-    document.querySelector('.btn-primary').disabled = false;
-}
-
-function goBack() {
-    // Keep data in session storage and go back to add page
-    window.location.href = '/jobs/add';
-}
+        // Submit to backend
+        fetch('/jobs/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jobData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Job saved successfully!');
+                window.location.href = '/jobs';
+            } else {
+                alert('Error saving job: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error saving job. Please try again.');
+        });
+    });
 </script>
-{% endblock %}
+</body>
+</html>

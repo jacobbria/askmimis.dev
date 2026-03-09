@@ -331,72 +331,6 @@
             text-align: center;
         }
 
-        /* Hamburger Menu */
-        .burger-menu {
-            display: flex;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding: 20px;
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .burger-icon {
-            font-size: 32px;
-            color: #333;
-            user-select: none;
-            transition: color 0.5s ease, transform 0.5s ease;
-            display: inline-block;
-        }
-
-        .burger-icon.rotated {
-            transform: rotate(90deg);
-        }
-
-        .burger-menu.open .burger-icon {
-            color: var(--color-landing-yellow);
-        }
-
-        .burger-menu-items {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100vh;
-            background-color: var(--color-landing-yellow);
-            flex-direction: column;
-            padding: 80px 20px 20px 20px;
-            z-index: 999;
-            overflow-y: auto;
-            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .burger-menu-items.open {
-            left: 0;
-        }
-
-        .burger-menu-items a {
-            padding: 20px;
-            text-decoration: none;
-            color: #333;
-            font-family: var(--font-text);
-            font-size: 20px;
-            font-weight: 500;
-            display: block;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .burger-menu-items a:hover {
-            text-decoration: var(--highlight-decoration, underline);
-            text-decoration-thickness: var(--highlight-thickness, 2px);
-            text-underline-offset: var(--highlight-offset, 5px);
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .jobs-section-title {
@@ -923,20 +857,11 @@
         </div>
     </div>
 
-    <!-- Hamburger Menu -->
-    <div class="burger-menu" id="burgerMenu">
-        <span class="burger-icon" onclick="toggleBurgerMenu()">☰</span>
-    </div>
+    <!-- Navbar Component -->
+    {% include 'components/navbar.html' %}
 
     <!-- Developer Mode Toggle Button -->
     <button class="direct-search-toggle" id="directSearchToggle" onclick="toggleDirectSearch()">🔍</button>
-
-    <!-- Burger Menu Items -->
-    <div class="burger-menu-items" id="burgerMenuItems">
-        <a href="{{ url_for('index') }}">Home</a>
-        <a href="{{ url_for('jobs', _anchor='add') }}">Add</a>
-        <a href="#" onclick="openModal(); return false;">Ask</a>
-    </div>
 
     <!-- Search Container -->
     <div class="search-container" id="searchContainer">
@@ -971,8 +896,14 @@
             </div>
             <button class="add-filter-btn" onclick="addFilter()">+ Add Filter</button>
             <div class="query-button-group">
-                <button class="query-send-btn" onclick="executeQuery()" title="Execute Search">Search</button>
-                <button class="query-clear-btn" onclick="clearAllFilters()" title="Clear Filters">Reset</button>
+                {% set button_text = 'Search' %}
+                {% set button_onclick = 'executeQuery()' %}
+                {% set button_size = 'medium' %}
+                {% include 'components/standard_button.html' %}
+                {% set button_text = 'Reset' %}
+                {% set button_onclick = 'clearAllFilters()' %}
+                {% set button_size = 'medium' %}
+                {% include 'components/standard_button.html' %}
                 <div class="table-toggle-wrapper" id="tableToggleWrapper" style="display: none;">
                     <input type="checkbox" id="tableToggleCheckbox" class="table-toggle-checkbox" onchange="toggleResultsTable()">
                     <label for="tableToggleCheckbox" class="table-toggle-label">📊 View Raw Data</label>
@@ -994,39 +925,6 @@
     </section>
 
     <script>
-        // Toggle burger menu
-        function toggleBurgerMenu() {
-            const burgerMenuItems = document.getElementById('burgerMenuItems');
-            const burgerIcon = document.querySelector('.burger-icon');
-            burgerMenuItems.classList.toggle('open');
-            burgerIcon.classList.toggle('rotated');
-        }
-
-        // Close burger menu when a link is clicked
-        const burgerLinks = document.querySelectorAll('.burger-menu-items a');
-        burgerLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                const burgerMenuItems = document.getElementById('burgerMenuItems');
-                const burgerIcon = document.querySelector('.burger-icon');
-                burgerMenuItems.classList.remove('open');
-                burgerIcon.classList.remove('rotated');
-            });
-        });
-
-        // Close burger menu when clicking outside of it
-        document.addEventListener('click', function(event) {
-            const burgerMenu = document.getElementById('burgerMenu');
-            const burgerMenuItems = document.getElementById('burgerMenuItems');
-            const burgerIcon = document.querySelector('.burger-icon');
-            const isClickInsideMenu = burgerMenuItems.contains(event.target);
-            const isClickOnIcon = burgerMenu.contains(event.target);
-            
-            if (!isClickInsideMenu && !isClickOnIcon) {
-                burgerMenuItems.classList.remove('open');
-                burgerIcon.classList.remove('rotated');
-            }
-        });
-
         // Show search textbox after 1.5 seconds
         setTimeout(() => {
             const textboxWrapper = document.getElementById('textboxWrapper');

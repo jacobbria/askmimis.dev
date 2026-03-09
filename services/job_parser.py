@@ -104,7 +104,7 @@ def parse_job_posting(job_text):
         
         job_data = json.loads(response_text)
         
-        print(f"[JOB_PARSER] ✓ Successfully parsed job posting")
+        print(f"[JOB_PARSER] Successfully parsed job posting")
         print(f"[JOB_PARSER] Title: {job_data.get('title')}")
         print(f"[JOB_PARSER] Company: {job_data.get('company')}")
         print(f"[JOB_PARSER] Location: {job_data.get('location')}")
@@ -114,7 +114,7 @@ def parse_job_posting(job_text):
         
     except json.JSONDecodeError as e:
         error_msg = f"Failed to parse Gemini response as JSON: {str(e)}"
-        print(f"[JOB_PARSER] ❌ {error_msg}")
+        print(f"[JOB_PARSER] ERROR: {error_msg}")
         logger.error(error_msg)
         return {
             'error': 'parse_error',
@@ -123,7 +123,7 @@ def parse_job_posting(job_text):
         
     except Exception as e:
         error_msg = f"Error parsing job posting: {str(e)}"
-        print(f"[JOB_PARSER] ❌ {error_msg}")
+        print(f"[JOB_PARSER] ERROR: {error_msg}")
         logger.error(error_msg)
         return {
             'error': 'parsing_error',

@@ -31,7 +31,7 @@ def get_secret(secret_name, fallback_env_var=None):
             credential = DefaultAzureCredential()
             client = SecretClient(vault_url=key_vault_url, credential=credential)
             secret = client.get_secret(secret_name)
-            print(f"[KEY_VAULT] ✓ Successfully retrieved '{secret_name}' from Azure Key Vault")
+            print(f"[KEY_VAULT] Successfully retrieved '{secret_name}' from Azure Key Vault")
             return secret.value
     except Exception as e:
         print(f"[KEY_VAULT] ⚠ Could not retrieve '{secret_name}' from Key Vault: {e}")
@@ -43,7 +43,7 @@ def get_secret(secret_name, fallback_env_var=None):
             print(f"[KEY_VAULT] Using fallback environment variable: {fallback_env_var}")
             return env_value
     
-    print(f"[KEY_VAULT] ❌ Could not retrieve '{secret_name}' from Key Vault or environment variables")
+    print(f"[KEY_VAULT] Could not retrieve '{secret_name}' from Key Vault or environment variables")
     return None
 
 
@@ -54,8 +54,8 @@ AUTHORITY = os.getenv('ENTRA_AUTHORITY', 'https://login.microsoftonline.com/comm
 REDIRECT_URI = os.getenv('ENTRA_REDIRECT_URI', 'http://localhost:8000/auth/callback')
 
 print("\n[AUTH_INIT] ===== ENTRA AUTH MODULE INITIALIZED =====")
-print(f"[AUTH_INIT] CLIENT_ID: {CLIENT_ID if CLIENT_ID else '❌ NOT SET'}")
-print(f"[AUTH_INIT] CLIENT_SECRET: {'✓ Set' if CLIENT_SECRET else '❌ NOT SET'}")
+print(f"[AUTH_INIT] CLIENT_ID: {CLIENT_ID if CLIENT_ID else 'NOT SET'}")
+print(f"[AUTH_INIT] CLIENT_SECRET: {'Set' if CLIENT_SECRET else 'NOT SET'}")
 print(f"[AUTH_INIT] AUTHORITY: {AUTHORITY}")
 print(f"[AUTH_INIT] REDIRECT_URI: {REDIRECT_URI}")
 print(f"[AUTH_INIT] =============================================\n")
@@ -102,7 +102,7 @@ def get_auth_url():
     print(f"[GET_AUTH_URL] Authorization URL returned: {type(auth_url)}")
     
     result_url = auth_url[0] if isinstance(auth_url, tuple) else auth_url
-    print(f"[GET_AUTH_URL] ✓ Final URL: {result_url[:150]}...")
+    print(f"[GET_AUTH_URL] Final URL: {result_url[:150]}...")
     return result_url
 
 
@@ -155,7 +155,7 @@ def acquire_token_by_auth_code(code, scopes=None):
             return token_response
         
         if 'access_token' in token_response:
-            print(f"[AUTH] ✓ SUCCESS! Access token acquired")
+            print(f"[AUTH] SUCCESS! Access token acquired")
             print(f"[AUTH] Token Type: {token_response.get('token_type')}")
             print(f"[AUTH] Expires In: {token_response.get('expires_in')} seconds")
             if 'id_token_claims' in token_response:

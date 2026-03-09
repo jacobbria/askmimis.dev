@@ -204,15 +204,17 @@ def parse_job():
             logger.error(f"Error parsing job: {parsed_job}")
             return jsonify(parsed_job), 500
         
-        # Validate the parsed data
-        if not job_parser.validate_job_data(parsed_job):
-            logger.warning(f"Parsed job data validation failed: {parsed_job}")
-            return jsonify({
-                'error': 'validation_failed',
-                'message': 'Could not extract all required job fields. Please try a more detailed posting.'
-            }), 400
+        # Check for missing fields but allow partial data
+        required_fields = ['title', 'company', 'location', 'description']
+        missing_fields = [field for field in required_fields if not parsed_job.get(field)]
         
-        logger.info(f"✓ Job parsing successful: {parsed_job.get('title')}")
+        if missing_fields:
+            logger.warning(f"Parsed job has missing fields: {missing_fields}. Data: {parsed_job}")
+            parsed_job['warning'] = f"Some fields were not extracted: {', '.join(missing_fields)}. Please fill them in manually."
+        else:
+            logger.info(f"Job parsing successful: {parsed_job.get('title')}")
+        
+        # Return parsed data regardless of missing fields (user can fill them in manually)
         return jsonify(parsed_job), 200
         
     except Exception as e:
@@ -266,7 +268,7 @@ def save_job():
             link=data.get('link', '').strip() or None
         )
         
-        logger.info(f"✓ Job saved successfully with ID: {job_id}")
+        logger.info(f"Job saved successfully with ID: {job_id}")
         return jsonify({
             'success': True,
             'message': 'Job posted successfully',
@@ -370,7 +372,7 @@ def auth_login():
     print(f"[LOGIN] Getting authorization URL from MSAL...")
     logger.info("User initiated login")
     auth_url = auth.get_auth_url()
-    print(f"[LOGIN] ✓ Authorization URL generated")
+    print(f"[LOGIN] Authorization URL generated")
     print(f"[LOGIN] Redirecting to: {auth_url[:100]}...")
     return redirect(auth_url)
 
@@ -392,12 +394,12 @@ def auth_callback():
         print(f"[CALLBACK] Error Description: {error_description}")
         
         if error:
-            print(f"[CALLBACK] ✗ ERROR from Microsoft: {error} - {error_description}")
+            print(f"[CALLBACK] ERROR from Microsoft: {error} - {error_description}")
             logger.warning(f"Auth error from Microsoft: {error} - {error_description}")
             return redirect(url_for('index'))
         
         if not code:
-            print(f"[CALLBACK] ✗ No authorization code received in callback")
+            print(f"[CALLBACK] No authorization code received in callback")
             logger.warning("No authorization code received in callback")
             return redirect(url_for('index'))
         
@@ -408,13 +410,13 @@ def auth_callback():
         print(f"[CALLBACK] Token response keys: {token_response.keys() if isinstance(token_response, dict) else 'Not a dict'}")
         
         if 'error' in token_response:
-            print(f"[CALLBACK] ✗ Token acquisition FAILED")
+            print(f"[CALLBACK] Token acquisition FAILED")
             print(f"[CALLBACK] Error: {token_response.get('error')}")
             print(f"[CALLBACK] Description: {token_response.get('error_description')}")
             logger.error(f"Token acquisition failed: {token_response.get('error_description')}")
             return redirect(url_for('index'))
         
-        print(f"[CALLBACK] ✓ Token acquired successfully!")
+        print(f"[CALLBACK] Token acquired successfully!")
         # Store token in session
         session['access_token'] = token_response.get('access_token')
         session['user_id'] = token_response.get('id_token_claims', {}).get('oid')
@@ -426,11 +428,11 @@ def auth_callback():
         print(f"[CALLBACK] - User Name: {session.get('user_name')}")
         
         logger.info(f"User authenticated successfully: {session.get('user_name')}")
-        print(f"[CALLBACK] ✓ Authentication successful! Redirecting to home page...")
+        print(f"[CALLBACK] Authentication successful! Redirecting to home page...")
         return redirect(url_for('index'))
         
     except Exception as e:
-        print(f"[CALLBACK] ✗ EXCEPTION in auth callback:")
+        print(f"[CALLBACK] EXCEPTION in auth callback:")
         print(f"[CALLBACK] Exception Type: {type(e).__name__}")
         print(f"[CALLBACK] Exception Message: {str(e)}")
         import traceback

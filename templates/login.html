@@ -12,6 +12,10 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --default-title-font: 'Bungee', cursive;
+        }
+
         body {
             font-family: 'Amatic SC', cursive;
             background-color: #a260a5;
@@ -67,7 +71,7 @@
         }
 
         .login-logo {
-            font-family: 'Bungee', cursive;
+            font-family: var(--default-title-font);
             font-size: 48px;
             color: #667eea;
             margin-bottom: 30px;
@@ -76,7 +80,7 @@
         }
 
         .login-title {
-            font-family: 'Bungee', cursive;
+            font-family: var(--default-title-font);
             font-size: 36px;
             color: #333;
             margin-bottom: 20px;

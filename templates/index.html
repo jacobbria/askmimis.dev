@@ -333,21 +333,7 @@
             text-decoration: underline;
         }
 
-        /* Begin Button - Higher Z-Index */
-        .section-2 .btn {
-            position: relative;
-            z-index: 100;
-            border: 5px solid black;
-            background: var(--color-landing-purple) !important;
-            color: var(--color-landing-cream);
-            padding: 20px 60px;
-            font-size: clamp(18px, 4vw, 42px);
-            font-weight: 700;
-        }
-
-        .section-2 .btn:hover {
-            background: #8d4d8f !important;
-        }
+        /* Begin Button styling moved to standard_button component */
 
         /* Description Popup */
         .description-popup {
@@ -383,86 +369,11 @@
             top: calc(50% + 80px);
             transform: translateX(50%);
         }
-
-        /* Hamburger Menu */
-        .burger-menu {
-            display: flex;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding: 20px;
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .burger-icon {
-            font-size: 32px;
-            color: #333;
-            user-select: none;
-            transition: color 0.5s ease, transform 0.5s ease;
-            display: inline-block;
-        }
-
-        .burger-icon.rotated {
-            transform: rotate(90deg);
-        }
-
-        .burger-menu.open .burger-icon {
-            color: var(--color-landing-yellow);
-        }
-
-        .burger-menu-items {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100vh;
-            background-color: var(--color-landing-yellow);
-            flex-direction: column;
-            padding: 80px 20px 20px 20px;
-            z-index: 999;
-            overflow-y: auto;
-            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .burger-menu-items.open {
-            left: 0;
-        }
-
-        .burger-menu-items a {
-            padding: 20px;
-            text-decoration: none;
-            color: #333;
-            font-family: var(--font-text);
-            font-size: 20px;
-            font-weight: 500;
-            display: block;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .burger-menu-items a:hover {
-            text-decoration: var(--highlight-decoration, underline);
-            text-decoration-thickness: var(--highlight-thickness, 2px);
-            text-underline-offset: var(--highlight-offset, 5px);
-        }
     </style>
 </head>
 <body>
-    <!-- Hamburger Menu -->
-    <div class="burger-menu" id="burgerMenu">
-        <span class="burger-icon" onclick="toggleBurgerMenu()">☰</span>
-    </div>
-
-    <!-- Burger Menu Items -->
-    <div class="burger-menu-items" id="burgerMenuItems">
-        <a href="{{ url_for('index') }}">Home</a>
-        <a href="#">Add</a>
-        <a href="#">Ask</a>
-    </div>
+    <!-- Navbar Component -->
+    {% include 'components/navbar.html' %}
 
     <!-- Section 1: Purple -->
     <section class="section section-1">
@@ -504,9 +415,10 @@
                 <div class="description-popup add-description" id="add-desc">Query your postings for insights and trends.</div>
             </div>
         </div>
-        <a href="{{ url_for('jobs') }}" class="btn btn-primary">
-            Begin
-        </a>
+        {% set button_text = 'Begin!' %}
+        {% set button_href = url_for('jobs') %}
+        {% set button_size = 'large' %}
+        {% include 'components/standard_button.html' %}
     </section>
 
     <script>
@@ -522,24 +434,6 @@
                 askDesc.classList.remove('show');
             }
         }
-
-        function toggleBurgerMenu() {
-            const burgerMenuItems = document.getElementById('burgerMenuItems');
-            const burgerIcon = document.querySelector('.burger-icon');
-            burgerMenuItems.classList.toggle('open');
-            burgerIcon.classList.toggle('rotated');
-        }
-
-        // Close burger menu when a link is clicked
-        const burgerLinks = document.querySelectorAll('.burger-menu-items a');
-        burgerLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                const burgerMenuItems = document.getElementById('burgerMenuItems');
-                const burgerIcon = document.querySelector('.burger-icon');
-                burgerMenuItems.classList.remove('open');
-                burgerIcon.classList.remove('rotated');
-            });
-        });
 
         // Close burger menu when clicking outside of it
         document.addEventListener('click', function(event) {

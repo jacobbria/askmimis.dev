@@ -1,0 +1,66 @@
+<!-- Standard Button Component -->
+<style>
+    .standard-button {
+        position: relative;
+        z-index: 100;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 5px solid black;
+        background: var(--color-landing-purple) !important;
+        color: var(--color-landing-cream);
+        font-family: var(--font-text);
+        font-weight: 700;
+        text-decoration: none;
+        border-radius: 0;
+        transition: background 0.3s ease, transform 0.2s ease;
+        cursor: pointer;
+    }
+
+    .standard-button:hover {
+        background: #8d4d8f !important;
+    }
+
+    .standard-button:active {
+        transform: scale(0.98);
+    }
+
+    /* Size Classes */
+    .standard-button.btn-xsmall {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    .standard-button.btn-small {
+        padding: 8px 20px;
+        font-size: 18px;
+    }
+
+    .standard-button.btn-medium {
+        padding: 12px 30px;
+        font-size: 24px;
+    }
+
+    .standard-button.btn-large {
+        padding: 16px 40px;
+        font-size: 32px;
+    }
+
+    .standard-button.btn-xlarge {
+        padding: 20px 50px;
+        font-size: 36px;
+    }
+</style>
+
+{% set button_size = button_size or 'medium' %}
+{% if button_onclick %}
+    <!-- Button element for onclick handlers -->
+    <button type="button" class="standard-button btn-{{ button_size }}" onclick="{{ button_onclick }}" {% if button_width %}style="width: {{ button_width }}; height: {{ button_height }};"{% endif %}>
+        {{ button_text }}
+    </button>
+{% else %}
+    <!-- Link element for navigation -->
+    <a href="{{ button_href }}" class="standard-button btn-{{ button_size }}" {% if button_width %}style="width: {{ button_width }}; height: {{ button_height }};"{% endif %}>
+        {{ button_text }}
+    </a>
+{% endif %}

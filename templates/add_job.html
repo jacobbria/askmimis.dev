@@ -1,241 +1,298 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="container add-job-container">
-    <div class="add-job-header">
-        <h1> Add a New Job</h1>
-        <p>Paste a job posting below and let AI extract the details for you</p>
-    </div>
-
-    <form id="jobForm" class="job-form">
-        <div class="form-group">
-            <label for="jobText">Job Posting Text *</label>
-            <textarea 
-                id="jobText" 
-                name="jobText" 
-                required 
-                placeholder="Paste the entire job posting here..."
-                class="job-textarea"></textarea>
-            <small>Include the full job description, requirements, salary info, etc.</small>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-                <span id="submitText">Parse with AI</span>
-                <span id="loadingSpinner" style="display: none;">
-                    <i class="spinner"></i> Analyzing...
-                </span>
-            </button>
-            <a href="/jobs" class="btn btn-secondary">View Jobs</a>
-            <a href="/" class="btn btn-secondary">Cancel</a>
-        </div>
-    </form>
-
-    <div id="errorMessage" class="error-message" style="display: none;"></div>
-    <div id="loadingMessage" class="loading-message" style="display: none;">
-        <p> AI is analyzing the job posting...</p>
-    </div>
-</div>
-
-<style>
-.add-job-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-}
-
-.add-job-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.add-job-header h1 {
-    color: #333;
-    margin-bottom: 10px;
-    font-size: 2.5em;
-}
-
-.add-job-header p {
-    color: #666;
-    font-size: 1.1em;
-}
-
-.job-form {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-    margin-bottom: 25px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #333;
-    font-size: 1.05em;
-}
-
-.job-textarea {
-    width: 100%;
-    min-height: 300px;
-    padding: 15px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 1em;
-    resize: vertical;
-    transition: border-color 0.3s;
-}
-
-.job-textarea:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-group small {
-    display: block;
-    margin-top: 6px;
-    color: #999;
-    font-size: 0.9em;
-}
-
-.form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-primary {
-    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.btn-secondary {
-    background: #f0f0f0;
-    color: #333;
-}
-
-.btn-secondary:hover {
-    background: #e0e0e0;
-}
-
-.error-message {
-    background: #fee;
-    border: 1px solid #fcc;
-    color: #c33;
-    padding: 15px;
-    border-radius: 6px;
-    margin-top: 20px;
-}
-
-.loading-message {
-    text-align: center;
-    padding: 20px;
-    color: #667eea;
-    font-size: 1.1em;
-    font-weight: 600;
-}
-
-.spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 3px solid #667eea;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-</style>
-
-<script>
-document.getElementById('jobForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const jobText = document.getElementById('jobText').value.trim();
-    
-    if (!jobText) {
-        showError('Please paste a job posting');
-        return;
-    }
-    
-    // Show loading state
-    document.getElementById('submitText').style.display = 'none';
-    document.getElementById('loadingSpinner').style.display = 'inline';
-    document.getElementById('loadingMessage').style.display = 'block';
-    document.getElementById('errorMessage').style.display = 'none';
-    document.querySelector('.btn-primary').disabled = true;
-    
-    try {
-        const response = await fetch('/jobs/parse', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ jobText })
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok || data.error) {
-            showError(data.message || 'Failed to parse job posting');
-            resetForm();
-            return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Job - Resume Job Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        // Store parsed data and redirect to review page
-        sessionStorage.setItem('parsedJob', JSON.stringify(data));
-        window.location.href = '/jobs/review';
-        
-    } catch (error) {
-        showError('Error parsing job posting: ' + error.message);
-        resetForm();
-    }
-});
 
-function showError(message) {
-    const errorDiv = document.getElementById('errorMessage');
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-}
+        body {
+            font-family: var(--font-system);
+            background-color: var(--color-landing-purple);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-function resetForm() {
-    document.getElementById('submitText').style.display = 'inline';
-    document.getElementById('loadingSpinner').style.display = 'none';
-    document.getElementById('loadingMessage').style.display = 'none';
-    document.querySelector('.btn-primary').disabled = false;
-}
-</script>
-{% endblock %}
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+        }
+
+        .title {
+            font-family: var(--default-title-font);
+            font-size: 72px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .title.move-up {
+            transform: translateY(-10px);
+            opacity: 0.5;
+        }
+
+        .input-section {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+            opacity: 0;
+            transition: all 0.6s ease;
+            transform: translateY(20px);
+        }
+
+        .input-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 20px;
+            font-size: 16px;
+            border: 2px solid white;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.95);
+            font-family: var(--font-system);
+            resize: vertical;
+        }
+
+        textarea::placeholder {
+            color: #999;
+        }
+
+        textarea:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-weight: bold;
+        }
+
+        .btn-submit {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            display: none;
+            font-weight: bold;
+        }
+
+        .status-message.success {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+        }
+
+        .status-message.error {
+            background: rgba(244, 67, 54, 0.8);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 48px;
+                margin-bottom: 30px;
+            }
+
+            textarea {
+                min-height: 200px;
+                padding: 15px;
+            }
+
+            .button-group {
+                gap: 10px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Component -->
+    {% include 'components/navbar.html' %}
+
+    <main>
+        <div class="container">
+            <div class="content">
+                <h1 class="title">ADD A JOB</h1>
+                
+                <div class="input-section">
+                    <textarea id="jobText" placeholder="Paste your job posting here..."></textarea>
+                    
+                    <div class="button-group">
+                        {% set button_text = 'Parse Job' %}
+                        {% set button_onclick = 'submitJob()' %}
+                        {% set button_size = 'medium' %}
+                        {% include 'components/standard_button.html' %}
+                    </div>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p style="color: white; margin-top: 15px;">Processing job posting...</p>
+                    </div>
+                    
+                    <div class="status-message" id="statusMessage"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Animation: Move title up and show input after 3 seconds
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.title').classList.add('move-up');
+                document.querySelector('.input-section').classList.add('show');
+            }, 3000);
+        });
+
+        // Submit job function
+        async function submitJob() {
+            const jobText = document.getElementById('jobText').value.trim();
+            
+            if (!jobText) {
+                showStatus('Please enter a job posting', 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch('{{ url_for("parse_job") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ jobText: jobText })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store parsed data in sessionStorage for review page
+                    sessionStorage.setItem('parsedJobData', JSON.stringify(data));
+                    
+                    showStatus('Job parsed successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '{{ url_for("review_job") }}';
+                    }, 1500);
+                } else {
+                    showStatus(data.message || 'Failed to parse job posting', 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Cancel function
+        function cancelJob() {
+            window.location.href = '{{ url_for("index") }}';
+        }
+
+        // Show/hide loading spinner
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type}`;
+            statusEl.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

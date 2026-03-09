@@ -48,7 +48,8 @@
     --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.2);
     
     /* Fonts */
-    --font-title: 'Bungee', cursive;
+    --default-title-font: 'Bungee', cursive;
+    --font-title: var(--default-title-font);
     --font-text: 'Amatic SC', cursive;
     --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     
@@ -166,17 +167,27 @@
 }
 
 /* Button Sizes */
-.btn-sm {
+.btn-xsmall {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+.btn-small {
     padding: 8px 20px;
     font-size: 18px;
 }
 
-.btn-lg {
+.btn-medium {
+    padding: 12px 30px;
+    font-size: 24px;
+}
+
+.btn-large {
     padding: 16px 40px;
     font-size: 32px;
 }
 
-.btn-xl {
+.btn-xlarge {
     padding: 20px 50px;
     font-size: 36px;
 }
