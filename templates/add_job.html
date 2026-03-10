@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Job - Resume Job Tracker</title>
+    <title>Add Job</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <style>
         * {
@@ -46,21 +46,41 @@
             width: 100%;
         }
 
-        .title {
-            font-family: var(--default-title-font);
-            font-size: 72px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform: translateY(0);
-            opacity: 1;
+        @keyframes popDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .title.move-up {
-            transform: translateY(-10px);
-            opacity: 0.5;
+        .title {
+            font-family: var(--default-title-font);
+            font-size: 150px;
+            font-weight: bold;
+            color: var(--color-landing-cream);
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: popDown 0.6s ease-out forwards;
+        }
+
+        .title-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .dev-suffix {
+            font-family: var(--font-title);
+            font-size: clamp(25px, 6vw, 60px);
+            color: var(--color-landing-cream);
+            position: absolute;
+            bottom: -25px;
+            right: 0;
+
         }
 
         .input-section {
@@ -68,7 +88,7 @@
             margin: 0 auto;
             padding: 0 20px;
             opacity: 0;
-            transition: all 0.6s ease;
+            transition: all 1s ease;
             transform: translateY(20px);
         }
 
@@ -204,8 +224,14 @@
     <main>
         <div class="container">
             <div class="content">
-                <h1 class="title">ADD A JOB</h1>
+            <div class="title-wrapper">
+                <h1 class="title">ADD
+
+                    <div class="dev-suffix">Job</div>
+                </h1>
                 
+            </div>
+
                 <div class="input-section">
                     <textarea id="jobText" placeholder="Paste your job posting here..."></textarea>
                     
@@ -231,9 +257,9 @@
         // Animation: Move title up and show input after 3 seconds
         window.addEventListener('load', () => {
             setTimeout(() => {
-                document.querySelector('.title').classList.add('move-up');
+                document.querySelector('.title-wrapper').classList.add('move-up');
                 document.querySelector('.input-section').classList.add('show');
-            }, 3000);
+            }, 1000);
         });
 
         // Submit job function

@@ -9,9 +9,10 @@
     <div class="burger-menu" id="burgerMenu">
         <div class="burger-menu-items" id="burgerMenuItems">
             <a href="/" class="burger-menu-link" onclick="closeBurgerMenu()">Home</a>
-            {% if is_authenticated %}
+            
                 <a href="/jobs/add" class="burger-menu-link" onclick="closeBurgerMenu()">Add</a>
                 <a href="/jobs" class="burger-menu-link" onclick="closeBurgerMenu()">Ask</a>
+            {% if is_authenticated %}
                 <a href="/logout" class="burger-menu-link" onclick="closeBurgerMenu()">Logout</a>
             {% else %}
                 <a href="/login" class="burger-menu-link" onclick="closeBurgerMenu()">Login</a>

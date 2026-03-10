@@ -215,10 +215,8 @@
 
     <script>
         function handleLogin() {
-            // Redirect to the authentication/registration page
-            // If you have a proper auth endpoint, use that
-            // Otherwise redirect back to index which will handle auth
-            window.location.href = '/';
+            // Redirect to Entra ID authentication endpoint
+            window.location.href = '/auth/login';
         }
 
         function handleGuest() {

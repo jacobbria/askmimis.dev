@@ -98,6 +98,36 @@
 }
 
 /* ===========================================
+   Animations - Reusable Effects
+   =========================================== */
+
+/* Border drawing animation - used by cards, buttons, etc */
+@keyframes drawBorder {
+    0% {
+        clip-path: inset(0 100% 100% 0);
+    }
+    25% {
+        clip-path: inset(0 0 100% 0);
+    }
+    50% {
+        clip-path: inset(0 0 0 0);
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* Lift effect - raises element on hover */
+.lift-on-hover {
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.lift-on-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* ===========================================
    Button Component System
    =========================================== */
 
