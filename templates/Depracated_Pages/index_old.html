@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}askMimis{% endblock %}
+
+{% block custom_styles %}
+
+    .auth-icon-button.authenticated:hover {
+        box-shadow: 0 0 20px #00ff00, 0 0 40px rgba(0, 255, 0, 0.8);
+    }
+
+    .auth-icon-button.not-authenticated:hover {
+        box-shadow: 0 0 20px #ff0000, 0 0 40px rgba(255, 0, 0, 0.8);
+    }
+
+    .status-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        display: none;
+    }
+
+    .status-dot.authenticated {
+        background-color: #4CAF50;
+        color: #4CAF50;
+    }
+
+    .status-dot.not-authenticated {
+        background-color: #ff6b6b;
+        color: #ff6b6b;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    /* Tooltip/Hover Label */
+    .auth-tooltip {
+        position: absolute;
+        bottom: -40px;
+        right: 0;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        transform: translateY(-5px);
+    }
+
+    .auth-icon-button:hover .auth-tooltip {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding-top: 50px;
+    }
+
+    .hero {
+        text-align: center;
+    }
+
+    @keyframes rotate-gradient {
+        0% { background-position: 0% 0%; }
+        50% { background-position: 100% 100%; }
+        100% { background-position: 0% 0%; }
+    }
+
+    @keyframes popup {
+        0% {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .greeting {
+        font-size: 72px;
+        font-weight: 700;
+        margin-bottom: 40px;
+        background: linear-gradient(45deg, #3d2a6f 0%, #667eea 25%, #764ba2 50%, #667eea 75%, #3d2a6f 100%);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: rotate-gradient 12s infinite, popup 0.8s ease-out;
+    }
+
+    .subtitle {
+        font-size: 18px;
+        color: rgba(102, 102, 102, 0.8);
+        margin-bottom: 50px;
+        line-height: 1.6;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        animation: popup 0.8s ease-out 0.1s both;
+    }
+
+    .subtext {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    .demo-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 16px 50px;
+        border-radius: 4px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: inline-block;
+        text-decoration: none;
+        animation: popup 0.8s ease-out 0.2s both;
+        font-family: inherit;
+        line-height: 1;
+        vertical-align: middle;
+        width: 280px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .demo-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    .custom-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 16px 50px;
+        border-radius: 4px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+        display: inline-block;
+        text-decoration: none;
+        animation: popup 0.8s ease-out 0.2s both;
+        margin-bottom: 15px;
+        font-family: inherit;
+        line-height: 1;
+        vertical-align: middle;
+        width: 280px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .custom-button:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    .custom-button:disabled {
+        background: #cccccc;
+        cursor: not-allowed;
+        opacity: 0.6;
+        box-shadow: none;
+    }
+
+    .custom-button:disabled:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar Menu is in base.html -->
+
+<div class="container">
+    <div class="hero">
+        <div class="greeting">askMimis</div>
+        <div class="subtitle">Generate insights on job postings using natural language</div>
+        <button id="customDataBtn" class="custom-button" disabled>Use Custom Data</button>
+        <br>
+        <a href="/jobs" class="demo-button">View Jobs</a>
+    </div>
+</div>
+
+<script>
+    // Add click handler for custom data button
+    document.addEventListener('DOMContentLoaded', function() {
+        const customDataBtn = document.getElementById('customDataBtn');
+        if (customDataBtn) {
+            customDataBtn.addEventListener('click', function(e) {
+                if (!this.disabled) {
+                    window.location.href = '/data';
+                } else {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

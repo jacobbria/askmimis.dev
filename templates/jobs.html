@@ -258,7 +258,10 @@
     <div class="query-section">
         <div class="query-input-group">
             <input type="text" class="query-input" placeholder="Ask a question about the job postings...">
-            <button class="query-button">Analyze</button>
+            {% set button_text = 'Analyze' %}
+            {% set button_href = '#' %}
+            {% set button_size = 'medium' %}
+            {% include 'components/standard_button.html' %}
         </div>
     </div>
 

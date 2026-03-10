@@ -416,3 +416,132 @@ def toggle_applied(job_id, user_id):
     conn.close()
     
     return new_status
+def execute_sql_query(query):
+    """
+    Execute a SQL query safely. Only allows SELECT queries (read-only).
+    Returns a dict with results and column names, or error message.
+    """
+    # Strip whitespace and convert to uppercase for checking
+    query_stripped = query.strip()
+    query_upper = query_stripped.upper()
+    
+    # Security: Only allow SELECT queries to prevent accidental data modification
+    if not query_upper.startswith('SELECT'):
+        return {
+            'error': 'Only SELECT queries are allowed in developer mode.'
+        }
+    
+    # Additional security check - block some dangerous patterns
+    dangerous_keywords = ['DROP', 'DELETE', 'INSERT', 'UPDATE', 'ALTER', 'TRUNCATE', 'CREATE', 'EXEC']
+    for keyword in dangerous_keywords:
+        if keyword in query_upper:
+            return {
+                'error': f'The keyword "{keyword}" is not allowed in developer mode.'
+            }
+    
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row  # Return rows as dictionaries
+        cursor = conn.cursor()
+        
+        cursor.execute(query)
+        
+        # Get column names
+        columns = [description[0] for description in cursor.description]
+        
+        # Fetch all results
+        rows = cursor.fetchall()
+        
+        # Convert Row objects to dictionaries
+        results = [dict(row) for row in rows]
+        
+        conn.close()
+        
+        return {
+            'results': results,
+            'columns': columns
+        }
+    except sqlite3.Error as e:
+        return {
+            'error': str(e)
+        }
+    except Exception as e:
+        return {
+            'error': f'An error occurred: {str(e)}'
+        }
+
+def query_jobs_with_filters(filters):
+    """
+    Query jobs with filters using a safe query builder approach.
+    Filters is a list of dicts with 'column' and 'value' keys.
+    Example: [{'column': 'title', 'value': 'developer'}, {'column': 'location', 'value': 'remote'}]
+    """
+    # Allowed columns to prevent SQL injection
+    ALLOWED_COLUMNS = ['id', 'title', 'description', 'skills', 'location', 'pay', 'company', 'posting_date', 'user_id', 'applied']
+    
+    # Validate filters
+    if not filters or len(filters) == 0:
+        return {
+            'error': 'At least one filter is required'
+        }
+    
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Start with basic SELECT
+        query = 'SELECT * FROM jobs WHERE '
+        conditions = []
+        params = []
+        
+        for filter_obj in filters:
+            column = filter_obj.get('column', '').strip().lower()
+            value = filter_obj.get('value', '').strip()
+            
+            # Validate column name
+            if column not in ALLOWED_COLUMNS:
+                conn.close()
+                return {
+                    'error': f'Invalid column: {column}'
+                }
+            
+            if not value:
+                continue
+            
+            # Use LIKE for case-insensitive substring matching
+            conditions.append(f'{column} LIKE ?')
+            params.append(f'%{value}%')
+        
+        if not conditions:
+            conn.close()
+            return {
+                'error': 'At least one filter value is required'
+            }
+        
+        # Combine conditions with AND
+        query += ' AND '.join(conditions)
+        
+        cursor.execute(query, params)
+        
+        # Get column names
+        columns = [description[0] for description in cursor.description]
+        
+        # Fetch all results (limit to 100 for safety)
+        rows = cursor.fetchall()
+        results = [dict(row) for row in rows[:100]]
+        
+        conn.close()
+        
+        return {
+            'results': results,
+            'columns': columns
+        }
+    except sqlite3.Error as e:
+        return {
+            'error': str(e)
+        }
+    except Exception as e:
+        return {
+            'error': f'An error occurred: {str(e)}'
+        }

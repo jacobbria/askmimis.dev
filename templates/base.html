@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Mimis{% endblock %}</title>
+    <title>{% block title %}askMimis{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <style>
         * {
             margin: 0;
@@ -19,9 +20,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(45deg, #3d2a6f 0%, #667eea 25%, #764ba2 50%, #667eea 75%, #3d2a6f 100%);
-            background-size: 200% 200%;
-            animation: bg-rotate 12s infinite;
+            background: var(--color-landing-purple);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -255,6 +254,27 @@
             padding-left: 24px;
         }
 
+        .sidebar-menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 12px 0;
+            list-style: none;
+        }
+
+        .auth-menu-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .auth-menu-button:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+            border-left-color: #00ff00 !important;
+            padding-left: 28px !important;
+        }
+
         /* Overlay */
         .sidebar-overlay {
             position: fixed;
@@ -385,6 +405,8 @@
             <li><a href="/" onclick="toggleSidebar()">Home</a></li>
             <li><a href="/jobs/add" id="addJobLink" onclick="toggleSidebar()">Add</a></li>
             <li><a href="/jobs" id="queryJobLink" onclick="toggleSidebar()">Query</a></li>
+            <li class="sidebar-menu-divider"></li>
+            <li><a href="#" id="authMenuButton" class="auth-menu-button" onclick="handleAuthMenuClick(event)">Login</a></li>
         </ul>
     </div>
 
@@ -427,7 +449,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 - Hosted on Azure</p>
+        <p>&copy; 2026 Jacob Bria - Hosted on Azure</p>
     </footer>
 
     <script>
@@ -492,6 +514,7 @@
                 
                 const authIconButton = document.getElementById('authIconButton');
                 const authTooltip = document.getElementById('authTooltip');
+                const authMenuButton = document.getElementById('authMenuButton');
                 const addJobLink = document.getElementById('addJobLink');
                 const queryJobLink = document.getElementById('queryJobLink');
                 const customDataBtn = document.getElementById('customDataBtn');
@@ -502,6 +525,12 @@
                     authIconButton.classList.remove('not-authenticated');
                     authTooltip.textContent = `Signout (${data.user_name})`;
                     authIconButton.onclick = () => window.location.href = '/auth/logout';
+                    
+                    // Update auth menu button
+                    if (authMenuButton) {
+                        authMenuButton.textContent = `Logout (${data.user_name})`;
+                        authMenuButton.dataset.action = 'logout';
+                    }
                     
                     // Enable menu items for authenticated users
                     if (addJobLink) {
@@ -524,6 +553,12 @@
                     authTooltip.textContent = 'Login';
                     authIconButton.onclick = () => window.location.href = '/auth/login';
                     
+                    // Update auth menu button
+                    if (authMenuButton) {
+                        authMenuButton.textContent = 'Login';
+                        authMenuButton.dataset.action = 'login';
+                    }
+                    
                     // Disable menu items for unauthenticated users
                     if (addJobLink) {
                         addJobLink.classList.add('disabled');
@@ -544,6 +579,7 @@
                 // Default to not authenticated if check fails
                 const authIconButton = document.getElementById('authIconButton');
                 const authTooltip = document.getElementById('authTooltip');
+                const authMenuButton = document.getElementById('authMenuButton');
                 const addJobLink = document.getElementById('addJobLink');
                 const queryJobLink = document.getElementById('queryJobLink');
                 const customDataBtn = document.getElementById('customDataBtn');
@@ -552,6 +588,11 @@
                 authIconButton.classList.remove('authenticated');
                 authTooltip.textContent = 'Login';
                 authIconButton.onclick = () => window.location.href = '/auth/login';
+                
+                if (authMenuButton) {
+                    authMenuButton.textContent = 'Login';
+                    authMenuButton.dataset.action = 'login';
+                }
                 
                 if (addJobLink) {
                     addJobLink.classList.add('disabled');
@@ -565,6 +606,19 @@
                 if (customDataBtn) {
                     customDataBtn.disabled = true;
                 }
+            }
+        }
+
+        // Handle auth menu button click
+        function handleAuthMenuClick(event) {
+            event.preventDefault();
+            const authMenuButton = document.getElementById('authMenuButton');
+            const action = authMenuButton.dataset.action;
+            
+            if (action === 'logout') {
+                window.location.href = '/auth/logout';
+            } else {
+                window.location.href = '/auth/login';
             }
         }
 

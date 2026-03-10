@@ -38,21 +38,40 @@ def index():
     is_authenticated = auth.is_authenticated(session)
     return render_template('index.html', is_authenticated=is_authenticated)
 
+@app.route('/login')
+def login():
+    """Login page with authentication and guest options."""
+    is_authenticated = auth.is_authenticated(session)
+    if is_authenticated:
+        # Already logged in, redirect to jobs
+        return redirect(url_for('jobs'))
+    return render_template('login.html')
+
 @app.route('/jobs')
 def jobs():
-    """Display jobs - user's own jobs if authenticated, demo jobs if not."""
+    """Main jobs page with Direct Search and Gemini AI analysis."""
     logger.info("Jobs page accessed")
+    is_authenticated = auth.is_authenticated(session)
+    # Jobs page requires authentication OR guest mode
+    # Guest mode verification will be done on frontend via localStorage
+    user_id = session.get('user_id') if is_authenticated else None
+    return render_template('jobs_beta.html', is_authenticated=is_authenticated, user_id=user_id)
+
+@app.route('/jobs-classic')
+def jobs_classic():
+    """Legacy jobs page - kept for backward compatibility."""
+    logger.info("Classic jobs page accessed")
     is_authenticated = auth.is_authenticated(session)
     try:
         if is_authenticated:
             user_id = session.get('user_id')
-            jobs = db.get_user_jobs(user_id)
-            logger.info(f"Retrieved {len(jobs)} jobs for user: {user_id}")
-            return render_template('jobs.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=True)
+            jobs_list = db.get_user_jobs(user_id)
+            logger.info(f"Retrieved {len(jobs_list)} jobs for user: {user_id}")
+            return render_template('jobs.html', jobs=jobs_list, is_authenticated=is_authenticated, user_jobs=True)
         else:
-            jobs = db.get_demo_jobs()
-            logger.info(f"Retrieved {len(jobs)} demo jobs for unauthenticated user")
-            return render_template('jobs.html', jobs=jobs, is_authenticated=is_authenticated, user_jobs=False)
+            jobs_list = db.get_demo_jobs()
+            logger.info(f"Retrieved {len(jobs_list)} demo jobs for unauthenticated user")
+            return render_template('jobs.html', jobs=jobs_list, is_authenticated=is_authenticated, user_jobs=False)
     except Exception as e:
         logger.error(f"Error loading jobs: {str(e)}", exc_info=True)
         return render_template('error.html', message='Error loading job data'), 500
@@ -80,8 +99,8 @@ def analyze_query():
         
         logger.info(f"Parsed filters: {parsed_filters}")
         
-        # Get all jobs
-        all_jobs = db.get_all_jobs()
+        # Get all jobs (including demo jobs for consistency with other search endpoints)
+        all_jobs = db.get_all_jobs(include_demo=True)
         logger.info(f"Retrieved {len(all_jobs)} total jobs from database")
         
         # Filter jobs based on parsed criteria
@@ -106,6 +125,34 @@ def analyze_query():
         logger.error(f"Error processing analysis query: {str(e)}", exc_info=True)
         return jsonify({'error': 'Analysis failed: ' + str(e)}), 500
 
+@app.route('/api/get-user-jobs', methods=['GET'])
+def get_user_jobs_api():
+    """API endpoint to get jobs posted by the authenticated user."""
+    try:
+        is_authenticated = auth.is_authenticated(session)
+        if not is_authenticated:
+            logger.warning("Unauthorized attempt to access user jobs")
+            return jsonify({'error': 'Not authenticated', 'jobs': []}), 401
+        
+        user_id = session.get('user_id')
+        jobs = db.get_user_jobs(user_id)
+        logger.info(f"Retrieved {len(jobs)} jobs for authenticated user: {user_id}")
+        return jsonify({'jobs': jobs}), 200
+    except Exception as e:
+        logger.error(f"Error getting user jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}', 'jobs': []}), 500
+
+@app.route('/api/get-demo-jobs', methods=['GET'])
+def get_demo_jobs_api():
+    """API endpoint to get demo jobs for guests."""
+    try:
+        jobs = db.get_demo_jobs()
+        logger.info(f"Retrieved {len(jobs)} demo jobs for guest user")
+        return jsonify({'jobs': jobs}), 200
+    except Exception as e:
+        logger.error(f"Error getting demo jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}', 'jobs': []}), 500
+
 @app.route('/data')
 def data_options():
     """Display options for querying or adding data."""
@@ -123,7 +170,7 @@ def add_job():
     is_authenticated = auth.is_authenticated(session)
     if not is_authenticated:
         logger.warning("Unauthenticated user tried to access job input page")
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
     
     logger.info(f"Job input form accessed by user: {session.get('user_id')}")
     return render_template('add_job.html', is_authenticated=is_authenticated)
@@ -157,15 +204,17 @@ def parse_job():
             logger.error(f"Error parsing job: {parsed_job}")
             return jsonify(parsed_job), 500
         
-        # Validate the parsed data
-        if not job_parser.validate_job_data(parsed_job):
-            logger.warning(f"Parsed job data validation failed: {parsed_job}")
-            return jsonify({
-                'error': 'validation_failed',
-                'message': 'Could not extract all required job fields. Please try a more detailed posting.'
-            }), 400
+        # Check for missing fields but allow partial data
+        required_fields = ['title', 'company', 'location', 'description']
+        missing_fields = [field for field in required_fields if not parsed_job.get(field)]
         
-        logger.info(f"✓ Job parsing successful: {parsed_job.get('title')}")
+        if missing_fields:
+            logger.warning(f"Parsed job has missing fields: {missing_fields}. Data: {parsed_job}")
+            parsed_job['warning'] = f"Some fields were not extracted: {', '.join(missing_fields)}. Please fill them in manually."
+        else:
+            logger.info(f"Job parsing successful: {parsed_job.get('title')}")
+        
+        # Return parsed data regardless of missing fields (user can fill them in manually)
         return jsonify(parsed_job), 200
         
     except Exception as e:
@@ -219,7 +268,7 @@ def save_job():
             link=data.get('link', '').strip() or None
         )
         
-        logger.info(f"✓ Job saved successfully with ID: {job_id}")
+        logger.info(f"Job saved successfully with ID: {job_id}")
         return jsonify({
             'success': True,
             'message': 'Job posted successfully',
@@ -323,7 +372,7 @@ def auth_login():
     print(f"[LOGIN] Getting authorization URL from MSAL...")
     logger.info("User initiated login")
     auth_url = auth.get_auth_url()
-    print(f"[LOGIN] ✓ Authorization URL generated")
+    print(f"[LOGIN] Authorization URL generated")
     print(f"[LOGIN] Redirecting to: {auth_url[:100]}...")
     return redirect(auth_url)
 
@@ -345,12 +394,12 @@ def auth_callback():
         print(f"[CALLBACK] Error Description: {error_description}")
         
         if error:
-            print(f"[CALLBACK] ✗ ERROR from Microsoft: {error} - {error_description}")
+            print(f"[CALLBACK] ERROR from Microsoft: {error} - {error_description}")
             logger.warning(f"Auth error from Microsoft: {error} - {error_description}")
             return redirect(url_for('index'))
         
         if not code:
-            print(f"[CALLBACK] ✗ No authorization code received in callback")
+            print(f"[CALLBACK] No authorization code received in callback")
             logger.warning("No authorization code received in callback")
             return redirect(url_for('index'))
         
@@ -361,13 +410,13 @@ def auth_callback():
         print(f"[CALLBACK] Token response keys: {token_response.keys() if isinstance(token_response, dict) else 'Not a dict'}")
         
         if 'error' in token_response:
-            print(f"[CALLBACK] ✗ Token acquisition FAILED")
+            print(f"[CALLBACK] Token acquisition FAILED")
             print(f"[CALLBACK] Error: {token_response.get('error')}")
             print(f"[CALLBACK] Description: {token_response.get('error_description')}")
             logger.error(f"Token acquisition failed: {token_response.get('error_description')}")
             return redirect(url_for('index'))
         
-        print(f"[CALLBACK] ✓ Token acquired successfully!")
+        print(f"[CALLBACK] Token acquired successfully!")
         # Store token in session
         session['access_token'] = token_response.get('access_token')
         session['user_id'] = token_response.get('id_token_claims', {}).get('oid')
@@ -379,11 +428,11 @@ def auth_callback():
         print(f"[CALLBACK] - User Name: {session.get('user_name')}")
         
         logger.info(f"User authenticated successfully: {session.get('user_name')}")
-        print(f"[CALLBACK] ✓ Authentication successful! Redirecting to home page...")
+        print(f"[CALLBACK] Authentication successful! Redirecting to home page...")
         return redirect(url_for('index'))
         
     except Exception as e:
-        print(f"[CALLBACK] ✗ EXCEPTION in auth callback:")
+        print(f"[CALLBACK] EXCEPTION in auth callback:")
         print(f"[CALLBACK] Exception Type: {type(e).__name__}")
         print(f"[CALLBACK] Exception Message: {str(e)}")
         import traceback
@@ -411,6 +460,52 @@ def auth_status():
         'user_name': user_name,
         'user_id': session.get('user_id') if is_authenticated else None
     }), 200
+
+@app.route('/api/execute-sql', methods=['POST'])
+def execute_sql():
+    """API endpoint for executing SQL queries in developer mode."""
+    try:
+        data = request.get_json()
+        query = data.get('query', '').strip()
+        
+        if not query:
+            return jsonify({'error': 'No query provided'}), 400
+        
+        # Execute the query through db module
+        result = db.execute_sql_query(query)
+        
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"Error executing SQL query: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/query-jobs', methods=['POST'])
+def query_jobs():
+    """API endpoint for querying jobs using the query builder."""
+    try:
+        data = request.get_json()
+        filters = data.get('filters', [])
+        
+        if not filters:
+            return jsonify({'error': 'No filters provided'}), 400
+        
+        # Query jobs with filters through db module
+        result = db.query_jobs_with_filters(filters)
+        
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"Error querying jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/get-all-jobs', methods=['GET'])
+def get_all_jobs():
+    """API endpoint to get all jobs from the database."""
+    try:
+        jobs = db.get_all_jobs(include_demo=True)
+        return jsonify({'jobs': jobs}), 200
+    except Exception as e:
+        logger.error(f"Error getting all jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 if __name__ == '__main__':
     # Note: In production, use Gunicorn instead of Flask's development server

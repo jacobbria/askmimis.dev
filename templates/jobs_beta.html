@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs - Ask MIMIS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Bungee&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-text, 'Amatic SC', cursive);
+            background-color: #f5f5f5;
+        }
+
+        /* Header Section */
+        .jobs-header {
+            width: 100%;
+            height: 275px;
+            background-color: #6ee5dc;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            height: 100%;
+        }
+
+        .header-left {
+            flex: 0 0 auto;
+        }
+
+        .header-left img {
+            height: 250px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-right {
+            flex: 0 0 auto;
+        }
+
+        .header-title {
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 125px;
+            color: white;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            margin: 0;
+            white-space: nowrap;
+            padding: 10px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 48px;
+            }
+        }
+
+        .header-images-container {
+            display: flex;
+            gap: 0;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .header-image {
+            flex: 1;
+            min-width: 160px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            font-family: var(--font-text);
+        }
+
+        .img-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .img-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .img-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .img-4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .img-5 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .img-6 {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        /* Jobs Section */
+        .jobs-section {
+            padding: 60px 20px;
+            background-color: #f5f5f5;
+        }
+
+        .jobs-section-title {
+            text-align: center;
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 48px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .jobs-cards-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 25px;
+            padding: 0 20px;
+            min-height: 600px;
+        }
+
+        .job-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+            aspect-ratio: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: visible;
+            position: relative;
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #000000;
+            border-radius: 16px;
+            pointer-events: none;
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+        }
+
+        .job-card:hover::before {
+            animation: drawBorder 1s ease-in-out forwards;
+        }
+
+        .job-card:hover {
+            transform: translateY(-10px);
+        }
+
+        @keyframes drawBorder {
+            0% {
+                clip-path: inset(0 100% 100% 0);
+            }
+            25% {
+                clip-path: inset(0 0 100% 0);
+            }
+            50% {
+                clip-path: inset(0 0 0 0);
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        .job-card:hover .job-title {
+            text-decoration: var(--highlight-decoration, underline);
+            text-decoration-thickness: var(--highlight-thickness, 2px);
+            text-underline-offset: var(--highlight-offset, 5px);
+        }
+
+        .job-card-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .job-title {
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        .job-company {
+            display: none;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            color: #666;
+            margin: 0;
+            margin-top: auto;
+        }
+
+        .job-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .job-meta-item:nth-child(2),
+        .job-meta-item:nth-child(3) {
+            display: none;
+        }
+
+        .job-description {
+            display: block;
+            font-size: 16px;
+            line-height: 1.4;
+            color: #555;
+            margin: 10px 0 15px 0;
+        }
+
+        .job-tags {
+            display: none;
+        }
+
+        .job-tag {
+            background-color: var(--color-landing-yellow, #fde008);
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .job-button {
+            display: none;
+        }
+
+        .job-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .job-applied-label {
+            font-size: 18px;
+            color: #666;
+            font-family: var(--font-text);
+        }
+
+        /* Table Toggle Button */
+        .table-toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            padding-left: 15px;
+            border-left: 2px solid #ddd;
+        }
+
+        .table-toggle-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--color-landing-yellow, #fde008);
+        }
+
+        .table-toggle-label {
+            font-family: var(--font-text);
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            color: #333;
+        }
+
+        .query-results-container {
+            position: relative;
+        }
+
+        /* Pagination Controls */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .pagination-btn {
+            padding: 10px 20px;
+            background-color: var(--color-landing-yellow, #fde008);
+            border: 2px solid #333;
+            border-radius: 25px;
+            font-family: var(--font-text);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-family: var(--font-text);
+            font-size: 16px;
+            color: #333;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .jobs-section-title {
+                font-size: 36px;
+                margin-bottom: 30px;
+            }
+
+            .header-image {
+                min-width: 100px;
+                font-size: 14px;
+            }
+
+            .jobs-cards-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .job-title {
+                font-size: 22px;
+            }
+
+            .job-company {
+                font-size: 16px;
+            }
+
+            .job-meta {
+                font-size: 14px;
+                gap: 10px;
+            }
+
+            .job-description {
+                font-size: 16px;
+            }
+
+            .job-card {
+                padding: 20px;
+            }
+        }
+
+        /* Search Container */
+        .search-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 420px;
+            height: 100px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            pointer-events: none;
+        }
+
+        .search-container img:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+            filter: brightness(1.2);
+        }
+
+        /* Textbox Container */
+        .search-textbox-wrapper {
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 500px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.8s ease-out;
+            pointer-events: auto;
+            margin-right: -100px;
+            transform-origin: right;
+        }
+
+        .search-textbox-wrapper.show {
+            opacity: 1;
+            visibility: visible;
+            animation: slideFromRight 1s ease-out forwards;
+        }
+
+        @keyframes slideFromRight {
+            0% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes slideToRight {
+            0% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+        }
+
+        .search-textbox-wrapper.hide {
+            animation: slideToRight 1s ease-out forwards;
+        }
+
+        .search-input-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: start;
+            justify-content: start;
+            padding-left: 20px;
+        }
+
+        .search-input-wrapper input {
+            width: 250px;
+            height: 80px;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            font-family: var(--font-text);
+            font-size: 25px;
+            outline: none;
+            text-align: center;
+            color: #333;
+        }
+
+        .search-input-wrapper input::placeholder {
+            color: #bbb;
+        }
+
+        .search-mimir {
+            height: 200px;
+            object-fit: contain;
+            flex-shrink: 0;
+            transform: translateX(30px);
+            margin-top: 30px;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+        }
+
+        .search-mimir:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background-color: var(--color-landing-purple, #a260a5);
+            border-radius: 50px;
+            width: 90%;
+            max-width: 700px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: visible;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease-out;
+        }
+
+        .modal-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #000000;
+            border-radius: 50px;
+            pointer-events: none;
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            z-index: 10;
+        }
+
+        .modal-overlay.active .modal-container::before {
+            animation: drawBorder 1s ease-in-out forwards;
+        }
+
+        .modal-overlay.active .modal-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            background: #f0f0f0;
+            transform: rotate(90deg);
+        }
+
+        .modal-search-section {
+            padding: 0px 20px 0px 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: -55px;
+            margin-bottom: -30px;
+        }
+
+        .modal-search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            background: white;
+            font-family: var(--font-text);
+            font-size: 18px;
+            color: #333;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-search-input::placeholder {
+            color: #bbb;
+        }
+
+        .modal-search-mimir {
+            height: 180px;
+            object-fit: contain;
+            flex-shrink: 0;
+            cursor: pointer;
+            transform: translateX(-40px);
+            z-index: 999;
+        }
+
+        .modal-answer-section {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            background-color: var(--color-landing-cream, #feffed);
+            border-radius: 50px;
+        }
+
+        .modal-answer-text {
+            color: var(--color-text-dark, #1a1a2e);
+            font-family: var(--font-text);
+            font-size: 18px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .modal-title {
+            padding: 20px 30px 5px 30px;
+            text-align: left;
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 28px;
+            color: white;
+            margin: 0;
+        }
+
+        /* Job Detail Modal */
+        .job-detail-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .job-detail-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .job-detail-modal-container {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            height: auto;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: visible;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease-out;
+        }
+
+        .job-detail-modal-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 5px solid #000000;
+            border-radius: 16px;
+            pointer-events: none;
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            z-index: 10;
+        }
+
+        .job-detail-modal-overlay.active .job-detail-modal-container::before {
+            animation: drawBorder 1s ease-in-out forwards;
+        }
+
+        .job-detail-modal-overlay.active .job-detail-modal-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .job-detail-modal-title {
+            padding: 25px 25px 15px 25px;
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 24px;
+            color: #1a1a2e;
+            margin: 0;
+            text-align: left;
+        }
+
+        .job-detail-modal-divider {
+            height: 2px;
+            background-color: #e0e0e0;
+            margin: 0 25px;
+        }
+
+        .job-detail-modal-content {
+            padding: 20px 25px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .job-detail-description {
+            font-family: var(--font-text);
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .job-detail-section-title {
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 16px;
+            color: #1a1a2e;
+            margin: 15px 0 10px 0;
+            font-weight: bold;
+        }
+
+        .job-detail-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .job-detail-skill-tag {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-family: var(--font-text);
+        }
+
+        .job-detail-footer {
+            padding: 15px 25px;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .job-detail-location-pay {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .job-detail-location,
+        .job-detail-pay {
+            font-family: var(--font-text);
+            font-size: 14px;
+            color: #333;
+            margin: 0;
+        }
+
+        .job-detail-apply-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-detail-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .job-detail-applied-label {
+            font-family: var(--font-text);
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Query Builder Interface */
+        .query-builder-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto 40px auto;
+            padding: 25px 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .query-builder-container.active {
+            display: block;
+        }
+
+        .query-builder-title {
+            font-family: var(--font-title, 'Bungee', cursive);
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .filters-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <button class="modal-close-btn" onclick="closeModal()">×</button>
+            <h2 class="modal-title">CONSULT THE GODS</h2>
+            <div class="modal-search-section">
+                <input type="text" class="modal-search-input" id="modalSearchInput" placeholder="Ask Mimir something..." onkeypress="handleModalSearch(event)">
+                <img src="{{ url_for('static', filename='images/Mimir_Head_LongBeard.png') }}" alt="Mimir" class="modal-search-mimir" onclick="performSearch()" style="cursor: pointer;">
+            </div>
+            <div class="modal-answer-section">
+                <div class="modal-answer-text" id="modalAnswerText">Ask me anything...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div class="job-detail-modal-overlay" id="jobDetailModalOverlay">
+        <div class="job-detail-modal-container">
+            <button class="modal-close-btn" onclick="closeJobDetailModal()">×</button>
+            <h2 class="job-detail-modal-title" id="jobDetailTitle">Job Title</h2>
+            <div class="job-detail-modal-divider"></div>
+            <div class="job-detail-modal-content">
+                <p class="job-detail-description" id="jobDetailDescription">Job description</p>
+                <h3 class="job-detail-section-title">Skills</h3>
+                <div class="job-detail-skills" id="jobDetailSkills"></div>
+            </div>
+            <div class="job-detail-footer">
+                <div class="job-detail-location-pay">
+                    <p class="job-detail-location" id="jobDetailLocation">Location</p>
+                    <p class="job-detail-pay" id="jobDetailPay">Salary</p>
+                </div>
+                <div class="job-detail-apply-section">
+                    <input type="checkbox" class="job-detail-checkbox" id="jobDetailCheckbox">
+                    <span class="job-detail-applied-label">Applied</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar Component -->
+    {% include 'components/navbar.html' %}
+
+    <!-- Developer Mode Toggle Button -->
+    <button class="direct-search-toggle" id="directSearchToggle" onclick="toggleDirectSearch()">🔍</button>
+
+    <!-- Search Container -->
+    <div class="search-container" id="searchContainer">
+        <div class="search-textbox-wrapper" id="textboxWrapper">
+            <div class="search-input-wrapper">
+                <input type="text" placeholder="Enter here to consult the Gods...">
+            </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/Mimir_Head_LongBeard.png') }}" alt="Mimir" class="search-mimir">
+    </div>
+
+    <!-- Header Section -->
+    <section class="jobs-header">
+        <div class="header-wrapper">
+            <div class="header-left">
+                <img src="{{ url_for('static', filename='images/thor_cloud.png') }}" alt="Thor's Hammer">
+            </div>
+            <div class="header-right">
+                {% set title_main = 'JOBS' %}
+                {% set title_suffix = '' %}
+                {% include 'components/standard_title.html' %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Jobs Section -->
+    <section class="jobs-section">
+        <!-- Query Builder Container -->
+        <div class="query-builder-container" id="queryBuilderContainer">
+            <div class="query-builder-title">Search by Column</div>
+            <div class="filters-list" id="filtersList">
+                <!-- First filter will be added by JavaScript -->
+            </div>
+            <button class="add-filter-btn" onclick="addFilter()">+ Add Filter</button>
+            <div class="query-button-group">
+                {% set button_text = 'Search' %}
+                {% set button_onclick = 'executeQuery()' %}
+                {% set button_size = 'medium' %}
+                {% include 'components/standard_button.html' %}
+                {% set button_text = 'Reset' %}
+                {% set button_onclick = 'clearAllFilters()' %}
+                {% set button_size = 'medium' %}
+                {% include 'components/standard_button.html' %}
+                <div class="table-toggle-wrapper" id="tableToggleWrapper" style="display: none;">
+                    <input type="checkbox" id="tableToggleCheckbox" class="table-toggle-checkbox" onchange="toggleResultsTable()">
+                    <label for="tableToggleCheckbox" class="table-toggle-label"> View Table</label>
+                </div>
+            </div>
+            <div class="query-results-container" id="queryResultsContainer" style="display: none; margin-top: 30px;"></div>
+        </div>
+
+        <div class="jobs-cards-container" id="jobsCardsContainer">
+            <!-- Jobs will be loaded here dynamically -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-container" id="paginationContainer" style="display: none;">
+            <button class="pagination-btn" id="prevBtn" onclick="previousPage()">← Previous</button>
+            <span class="pagination-info" id="pageInfo">Page 1</span>
+            <button class="pagination-btn" id="nextBtn" onclick="nextPage()">Next →</button>
+        </div>
+    </section>
+
+    <script>
+        // Show search textbox after 1.5 seconds
+        setTimeout(() => {
+            const textboxWrapper = document.getElementById('textboxWrapper');
+            textboxWrapper.classList.add('show');
+        }, 1000);
+
+        // Hide search textbox after 3 seconds of being visible (1.5s delay + 1s animation + 3s visible)
+        setTimeout(() => {
+            const textboxWrapper = document.getElementById('textboxWrapper');
+            textboxWrapper.classList.remove('show');
+            textboxWrapper.classList.add('hide');
+        }, 5500);
+
+        // Open modal when clicking search mimir image
+        document.querySelector('.search-mimir').addEventListener('click', function() {
+            openModal();
+        });
+
+        function openModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.add('active');
+            document.getElementById('modalSearchInput').focus();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            modal.classList.remove('active');
+            document.getElementById('modalAnswerText').textContent = 'Ask me anything...';
+            document.getElementById('modalSearchInput').value = '';
+        }
+
+        function performSearch() {
+            const input = document.getElementById('modalSearchInput').value;
+            if (input.trim()) {
+                const answerText = document.getElementById('modalAnswerText');
+                
+                // Loading messages bank
+                const loadingMessages = [
+                    'Mimir is thinking...',
+                    'Interesting question...',
+                    'Dispatching the ravens...',
+                    'Knowledge is power!'
+                ];
+                
+                // Show random loading message
+                const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+                answerText.textContent = randomMessage;
+                
+                // Call Gemini API
+                const startTime = Date.now();
+                const minimumWaitTime = 1500; // 1.5 seconds minimum for better UX
+                
+                fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: input
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Calculate elapsed time to ensure minimum wait
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minimumWaitTime - elapsedTime);
+                    
+                    setTimeout(() => {
+                        if (data.success) {
+                            // Display Gemini analysis
+                            answerText.innerHTML = `<div style="line-height: 1.6; color: #333;">${escapeHtml(data.analysis)}</div>`;
+                            
+                            // Also display filtered jobs count if available
+                            if (data.jobs && data.jobs.length > 0) {
+                                const jobCount = document.createElement('div');
+                                jobCount.style.cssText = 'margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 14px; color: #666;';
+                                jobCount.textContent = `Found ${data.jobs.length} matching job(s)`;
+                                answerText.appendChild(jobCount);
+                            }
+                        } else {
+                            answerText.textContent = `Error: ${escapeHtml(data.error || 'Unknown error occurred')}`;
+                        }
+                    }, remainingTime);
+                })
+                .catch(error => {
+                    // Calculate elapsed time
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minimumWaitTime - elapsedTime);
+                    
+                    setTimeout(() => {
+                        answerText.textContent = `Error: ${escapeHtml(error.message || 'Failed to connect to Gemini API')}`;
+                    }, remainingTime);
+                });
+                
+                document.getElementById('modalSearchInput').value = '';
+            }
+        }
+
+        function handleModalSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        // Close modal when clicking outside of it
+        document.getElementById('modalOverlay').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+
+        // Job Detail Modal Functions
+        function openJobDetailModal(title, description, skills, location, pay, backgroundColor) {
+            document.getElementById('jobDetailTitle').textContent = title;
+            document.getElementById('jobDetailDescription').textContent = description;
+            document.getElementById('jobDetailLocation').textContent = '📍 ' + location;
+            document.getElementById('jobDetailPay').textContent = '💰 ' + pay;
+            
+            // Set modal background color to match the card
+            document.querySelector('.job-detail-modal-container').style.backgroundColor = backgroundColor;
+            
+            // Populate skills
+            const skillsContainer = document.getElementById('jobDetailSkills');
+            skillsContainer.innerHTML = '';
+            const skillsArray = skills.split(',').map(s => s.trim());
+            skillsArray.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'job-detail-skill-tag';
+                skillTag.textContent = skill;
+                skillsContainer.appendChild(skillTag);
+            });
+            
+            document.getElementById('jobDetailModalOverlay').classList.add('active');
+        }
+
+        function closeJobDetailModal() {
+            document.getElementById('jobDetailModalOverlay').classList.remove('active');
+        }
+
+        // Close job detail modal when clicking outside
+        document.getElementById('jobDetailModalOverlay').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeJobDetailModal();
+            }
+        });
+
+        // Flat color palette
+        const colorPalette = [
+            '#FF6B6B', // Red
+            '#4ECDC4', // Teal
+            '#FFE66D', // Yellow
+            '#95E1D3', // Mint
+            '#F38181', // Salmon
+            '#AA96DA', // Purple
+            '#FCBAD3', // Pink
+            '#A8D8EA', // Light Blue
+            '#AA96DA', // Lavender
+            '#FFD93D', // Golden
+            '#6BCB77', // Green
+            '#4D96FF', // Blue
+            '#FF6348', // Tomato
+            '#A29BFE', // Periwinkle
+            '#FFA502', // Orange
+            '#48DBFB'  // Sky Blue
+        ];
+
+        // Initialize page - check guest mode and load appropriate jobs
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAccessAndLoadJobs();
+        });
+
+        // Also load jobs if script runs after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkAccessAndLoadJobs);
+        } else {
+            checkAccessAndLoadJobs();
+        }
+
+        // Check if user has access (authenticated or guest) and load jobs
+        function checkAccessAndLoadJobs() {
+            const isAuthenticated = {{ 'true' if is_authenticated else 'false' }};
+            const guestMode = localStorage.getItem('guest_mode') === 'true';
+            
+            // If not authenticated and not guest, redirect to login
+            if (!isAuthenticated && !guestMode) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            loadAllJobs();
+        }
+
+        // Direct Search Functions
+        let directSearchActive = false;
+        let filterCount = 0;
+        let allJobs = [];
+
+        // Pagination variables
+        let currentPage = 1;
+        const JOBS_PER_PAGE = 6;
+        let totalPages = 1;
+
+        const COLUMN_OPTIONS = [
+            { value: 'title', label: 'Title' },
+            { value: 'description', label: 'Description' },
+            { value: 'skills', label: 'Skills' },
+            { value: 'location', label: 'Location' },
+            { value: 'pay', label: 'Salary' }
+        ];
+
+        // Load all jobs on page init
+        function loadAllJobs() {
+            const isAuthenticated = {{ 'true' if is_authenticated else 'false' }};
+            const guestMode = localStorage.getItem('guest_mode') === 'true';
+            
+            // Determine which endpoint to use
+            let endpoint = '/api/get-demo-jobs';  // Default to demo jobs
+            if (isAuthenticated) {
+                endpoint = '/api/get-user-jobs';  // Authenticated users get their own jobs
+            }
+            
+            fetch(endpoint)
+            .then(response => response.json())
+            .then(data => {
+                if (data.jobs) {
+                    allJobs = data.jobs;
+                    displayJobsInCards(allJobs);
+                } else if (response.status === 401) {
+                    // Session expired, redirect to login
+                    window.location.href = '/login';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading jobs:', error);
+                // Fall back to demo data if available
+            });
+        }
+
+        function displayJobsInCards(jobs, pageNumber = 1) {
+            const container = document.getElementById('jobsCardsContainer');
+            const paginationContainer = document.getElementById('paginationContainer');
+            container.innerHTML = '';
+
+            if (jobs.length === 0) {
+                container.innerHTML = '<div style="padding: 40px; text-align: center; color: #999;">No jobs found</div>';
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            // Calculate pagination
+            totalPages = Math.ceil(jobs.length / JOBS_PER_PAGE);
+            currentPage = Math.max(1, Math.min(pageNumber, totalPages));
+            
+            const startIndex = (currentPage - 1) * JOBS_PER_PAGE;
+            const endIndex = startIndex + JOBS_PER_PAGE;
+            const jobsOnPage = jobs.slice(startIndex, endIndex);
+
+            const colorPalette = [
+                '#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181',
+                '#AA96DA', '#FCBAD3', '#A8D8EA', '#FFD93D', '#6BCB77',
+                '#4D96FF', '#FF6348', '#A29BFE', '#FFA502', '#48DBFB'
+            ];
+
+            jobsOnPage.forEach((job, index) => {
+                const colorIndex = (startIndex + index) % colorPalette.length;
+                const randomColor = colorPalette[colorIndex];
+                
+                const card = document.createElement('div');
+                card.className = 'job-card';
+                card.style.backgroundColor = randomColor;
+                card.onclick = () => openJobDetailModal(
+                    job.title,
+                    job.description,
+                    job.skills || 'unknown',
+                    job.location,
+                    job.pay,
+                    randomColor,
+                    job.link
+                );
+
+                const skillsDisplay = job.skills ? job.skills.split(',').map(s => s.trim()).slice(0, 3).join(', ') : 'unknown';
+                
+                let linkHtml = '';
+                if (job.link) {
+                    linkHtml = `<div style="margin-top: 10px; font-size: 14px;"><a href="${escapeHtml(job.link)}" target="_blank" style="color: #0066cc; text-decoration: underline;">🔗 View Posting</a></div>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <h3 class="job-title">${escapeHtml(job.title)}</h3>
+                        <p class="job-description">${escapeHtml(job.description || '')}</p>
+                        <div style="font-size: 13px; color: #666; margin: 8px 0;">
+                            <strong>Skills:</strong> ${escapeHtml(skillsDisplay)}
+                            ${linkHtml}
+                        </div>
+                    </div>
+                    <div class="job-meta">
+                        <div class="job-meta-item">📍 ${escapeHtml(job.location)}</div>
+                        <div class="job-checkbox-wrapper">
+                            <input type="checkbox" class="job-checkbox">
+                            <span class="job-applied-label">Applied</span>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            // Update pagination controls
+            updatePaginationControls();
+        }
+
+        function updatePaginationControls() {
+            const paginationContainer = document.getElementById('paginationContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageInfo = document.getElementById('pageInfo');
+
+            if (totalPages > 1) {
+                paginationContainer.style.display = 'flex';
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+            } else {
+                paginationContainer.style.display = 'none';
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayJobsInCards(allJobs, currentPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayJobsInCards(allJobs, currentPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function toggleDirectSearch() {
+            directSearchActive = !directSearchActive;
+            document.getElementById('queryBuilderContainer').classList.toggle('active', directSearchActive);
+            
+            // Initialize first filter if turning on
+            if (directSearchActive && filterCount === 0) {
+                addFilter();
+            }
+            
+            // Clear previous results when toggling
+            if (!directSearchActive) {
+                currentPage = 1;
+                document.getElementById('filtersList').innerHTML = '';
+                document.getElementById('queryResultsContainer').innerHTML = '';
+                document.getElementById('queryResultsContainer').style.display = 'none';
+                filterCount = 0;
+                displayJobsInCards(allJobs, 1);
+            }
+        }
+
+        function addFilter() {
+            const filtersList = document.getElementById('filtersList');
+            const filterId = `filter-${filterCount}`;
+            
+            const filterRow = document.createElement('div');
+            filterRow.className = 'filter-row';
+            filterRow.id = filterId;
+            
+            const columnSelect = document.createElement('select');
+            columnSelect.className = 'filter-column-select';
+            columnSelect.name = `column-${filterCount}`;
+            
+            COLUMN_OPTIONS.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option.value;
+                opt.textContent = option.label;
+                columnSelect.appendChild(opt);
+            });
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'filter-input';
+            input.name = `value-${filterCount}`;
+            input.placeholder = 'Enter search term...';
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    executeQuery();
+                }
+            };
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-filter-btn';
+            removeBtn.innerHTML = '✕';
+            removeBtn.onclick = () => removeFilter(filterId);
+            removeBtn.type = 'button';
+            
+            filterRow.appendChild(columnSelect);
+            filterRow.appendChild(input);
+            
+            // Only show remove button if there are multiple filters
+            if (filterCount > 0) {
+                filterRow.appendChild(removeBtn);
+            }
+            
+            filtersList.appendChild(filterRow);
+            filterCount++;
+            
+            input.focus();
+        }
+
+        function removeFilter(filterId) {
+            const filterElement = document.getElementById(filterId);
+            if (filterElement) {
+                filterElement.remove();
+            }
+        }
+
+        function executeQuery() {
+            const filtersList = document.getElementById('filtersList');
+            const filterRows = filtersList.querySelectorAll('.filter-row');
+            
+            if (filterRows.length === 0) {
+                showQueryError('Please add at least one filter');
+                return;
+            }
+            
+            // Build filters array from form inputs
+            const filters = [];
+            filterRows.forEach(row => {
+                const columnSelect = row.querySelector('select');
+                const input = row.querySelector('input');
+                
+                const column = columnSelect.value;
+                const value = input.value.trim();
+                
+                if (value) {
+                    filters.push({ column, value });
+                }
+            });
+            
+            if (filters.length === 0) {
+                showQueryError('Please enter at least one search term');
+                return;
+            }
+            
+            const resultsContainer = document.getElementById('queryResultsContainer');
+            resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; font-family: var(--font-system); color: #999;">Searching...</div>';
+            resultsContainer.style.display = 'block';
+
+            // Send filters to backend
+            fetch('/api/query-jobs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ filters: filters })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showQueryError(data.error);
+                } else {
+                    displayQueryResults(data.results, data.columns);
+                    // Reset pagination when search is performed
+                    currentPage = 1;
+                }
+            })
+            .catch(error => {
+                showQueryError('Failed to execute search: ' + error.message);
+            });
+        }
+
+        function displayQueryResults(results, columns) {
+            const resultsContainer = document.getElementById('queryResultsContainer');
+            const tableToggleWrapper = document.getElementById('tableToggleWrapper');
+            const tableToggleCheckbox = document.getElementById('tableToggleCheckbox');
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="query-no-results">No results found</div>';
+                resultsContainer.style.display = 'block';
+                tableToggleWrapper.style.display = 'none';
+                // Also clear the cards when no results
+                document.getElementById('jobsCardsContainer').innerHTML = '<div style="padding: 40px; text-align: center; color: #999;">No jobs found</div>';
+                document.getElementById('paginationContainer').style.display = 'none';
+                return;
+            }
+
+            // Display filtered results in cards with pagination
+            displayJobsInCards(results, 1);
+
+            // Show table toggle and build table
+            tableToggleWrapper.style.display = 'flex';
+            tableToggleCheckbox.checked = false;
+            
+            let html = '<div id="resultsTableWrapper" style="display: none;">';
+            html += '<table class="query-results-table"><thead><tr>';
+            
+            // Add headers
+            columns.forEach(col => {
+                html += '<th>' + escapeHtml(col) + '</th>';
+            });
+            html += '</tr></thead><tbody>';
+
+            // Add rows
+            results.forEach(row => {
+                html += '<tr>';
+                columns.forEach(col => {
+                    const value = row[col];
+                    html += '<td>' + escapeHtml(JSON.stringify(value)) + '</td>';
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            html += '</div>';
+            resultsContainer.innerHTML = html;
+            resultsContainer.style.display = 'block';
+        }
+
+        function toggleResultsTable() {
+            const checkbox = document.getElementById('tableToggleCheckbox');
+            const wrapper = document.getElementById('resultsTableWrapper');
+            
+            if (checkbox.checked) {
+                wrapper.style.display = 'block';
+            } else {
+                wrapper.style.display = 'none';
+            }
+        }
+
+        function showQueryError(error) {
+            const resultsContainer = document.getElementById('queryResultsContainer');
+            resultsContainer.innerHTML = '<div class="query-error-message"><strong>Error:</strong> ' + escapeHtml(error) + '</div>';
+            resultsContainer.style.display = 'block';
+        }
+
+        function clearAllFilters() {
+            document.getElementById('filtersList').innerHTML = '';
+            document.getElementById('queryResultsContainer').innerHTML = '';
+            document.getElementById('queryResultsContainer').style.display = 'none';
+            filterCount = 0;
+            currentPage = 1;
+            displayJobsInCards(allJobs, 1);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Update openJobDetailModal to accept link parameter
+        function openJobDetailModal(title, description, skills, location, pay, backgroundColor, link) {
+            document.getElementById('jobDetailTitle').textContent = title;
+            document.getElementById('jobDetailDescription').textContent = description;
+            document.getElementById('jobDetailLocation').textContent = '📍 ' + location;
+            document.getElementById('jobDetailPay').textContent = '💰 ' + pay;
+            
+            // Set modal background color to match the card
+            document.querySelector('.job-detail-modal-container').style.backgroundColor = backgroundColor;
+            
+            // Populate skills
+            const skillsContainer = document.getElementById('jobDetailSkills');
+            skillsContainer.innerHTML = '';
+            const skillsArray = skills.split(',').map(s => s.trim());
+            skillsArray.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'job-detail-skill-tag';
+                skillTag.textContent = skill;
+                skillsContainer.appendChild(skillTag);
+            });
+            
+            document.getElementById('jobDetailModalOverlay').classList.add('active');
+        }
+    </script>
+
+
+</body>
+</html>
