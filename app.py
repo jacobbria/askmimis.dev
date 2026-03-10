@@ -170,7 +170,7 @@ def add_job():
     is_authenticated = auth.is_authenticated(session)
     if not is_authenticated:
         logger.warning("Unauthenticated user tried to access job input page")
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
     
     logger.info(f"Job input form accessed by user: {session.get('user_id')}")
     return render_template('add_job.html', is_authenticated=is_authenticated)
