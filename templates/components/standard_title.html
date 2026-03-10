@@ -1,0 +1,50 @@
+<!-- Standard Title Component -->
+<style>
+    @keyframes popDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .standard-title-wrapper {
+        position: relative;
+        display: inline-block;
+        margin: 10px;
+    }
+
+    .standard-title {
+        font-family: var(--default-title-font);
+        font-size: 150px;
+        font-weight: bold;
+        color: var(--color-landing-cream);
+        margin-bottom: 40px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        animation: popDown 0.6s ease-out forwards;
+    }
+
+    .standard-title-suffix {
+        font-family: var(--font-title);
+        font-size: clamp(25px, 6vw, 60px);
+        color: var(--color-landing-cream);
+        position: absolute;
+        bottom: -25px;
+        right: 0;
+    }
+
+    @media (max-width: 480px) {
+        .standard-title {
+            font-size: 60px;
+        }
+    }
+</style>
+
+<div class="standard-title-wrapper">
+    <h1 class="standard-title">{{ title_main }}
+        <div class="standard-title-suffix">{{ title_suffix }}</div>
+    </h1>
+</div>

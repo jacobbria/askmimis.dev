@@ -46,42 +46,7 @@
             width: 100%;
         }
 
-        @keyframes popDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
-        .title {
-            font-family: var(--default-title-font);
-            font-size: 150px;
-            font-weight: bold;
-            color: var(--color-landing-cream);
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            animation: popDown 0.6s ease-out forwards;
-        }
-
-        .title-wrapper {
-            position: relative;
-            display: inline-block;
-            margin: 10px;
-        }
-
-        .dev-suffix {
-            font-family: var(--font-title);
-            font-size: clamp(25px, 6vw, 60px);
-            color: var(--color-landing-cream);
-            position: absolute;
-            bottom: -25px;
-            right: 0;
-
-        }
 
         .input-section {
             max-width: 600px;
@@ -196,7 +161,7 @@
         }
 
         @media (max-width: 768px) {
-            .title {
+            .standard-title {
                 font-size: 48px;
                 margin-bottom: 30px;
             }
@@ -224,13 +189,9 @@
     <main>
         <div class="container">
             <div class="content">
-            <div class="title-wrapper">
-                <h1 class="title">ADD
-
-                    <div class="dev-suffix">Job</div>
-                </h1>
-                
-            </div>
+            {% set title_main = 'ADD' %}
+            {% set title_suffix = 'Job' %}
+            {% include 'components/standard_title.html' %}
 
                 <div class="input-section">
                     <textarea id="jobText" placeholder="Paste your job posting here..."></textarea>
@@ -257,7 +218,7 @@
         // Animation: Move title up and show input after 3 seconds
         window.addEventListener('load', () => {
             setTimeout(() => {
-                document.querySelector('.title-wrapper').classList.add('move-up');
+                document.querySelector('.standard-title-wrapper').classList.add('move-up');
                 document.querySelector('.input-section').classList.add('show');
             }, 1000);
         });
