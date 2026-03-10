@@ -21,24 +21,46 @@
         /* Header Section */
         .jobs-header {
             width: 100%;
-            background-color: white;
+            height: 275px;
+            background-color: #6ee5dc;
             padding: 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            height: 100%;
+        }
+
+        .header-left {
+            flex: 0 0 auto;
+        }
+
+        .header-left img {
+            height: 250px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-right {
+            flex: 0 0 auto;
         }
 
         .header-title {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-family: var(--font-title, 'Bungee', cursive);
-            font-size: 72px;
+            font-size: 125px;
             color: white;
             text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             z-index: 100;
             margin: 0;
             white-space: nowrap;
+            padding: 10px 20px;
         }
 
         @media (max-width: 768px) {
@@ -875,14 +897,15 @@
 
     <!-- Header Section -->
     <section class="jobs-header">
-        <h1 class="header-title">JOBS</h1>
-        <div class="header-images-container">
-            <div class="header-image img-1">IMG1</div>
-            <div class="header-image img-2">IMG2</div>
-            <div class="header-image img-3">IMG3</div>
-            <div class="header-image img-4">IMG4</div>
-            <div class="header-image img-5">IMG5</div>
-            <div class="header-image img-6">IMG6</div>
+        <div class="header-wrapper">
+            <div class="header-left">
+                <img src="{{ url_for('static', filename='images/thor_cloud.png') }}" alt="Thor's Hammer">
+            </div>
+            <div class="header-right">
+                {% set title_main = 'JOBS' %}
+                {% set title_suffix = '' %}
+                {% include 'components/standard_title.html' %}
+            </div>
         </div>
     </section>
 
