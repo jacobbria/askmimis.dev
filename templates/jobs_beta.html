@@ -412,6 +412,22 @@
             filter: brightness(1.2);
         }
 
+        /* Direct Search Toggle Icon */
+        .direct-search-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 60px;
+            height: auto;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .direct-search-icon:hover {
+            transform: scale(1.15);
+        }
+
         /* Textbox Container */
         .search-textbox-wrapper {
             background: white;
@@ -882,9 +898,6 @@
     <!-- Navbar Component -->
     {% include 'components/navbar.html' %}
 
-    <!-- Developer Mode Toggle Button -->
-    <button class="direct-search-toggle" id="directSearchToggle" onclick="toggleDirectSearch()">🔍</button>
-
     <!-- Search Container -->
     <div class="search-container" id="searchContainer">
         <div class="search-textbox-wrapper" id="textboxWrapper">
@@ -897,6 +910,7 @@
 
     <!-- Header Section -->
     <section class="jobs-header">
+        <img src="{{ url_for('static', filename='images/eye-icon.png') }}" alt="Search" id="directSearchToggle" onclick="toggleDirectSearch()" class="direct-search-icon" title="Direct Search">
         <div class="header-wrapper">
             <div class="header-left">
                 <img src="{{ url_for('static', filename='images/thor_cloud.png') }}" alt="Thor's Hammer">
