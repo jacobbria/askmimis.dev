@@ -329,11 +329,8 @@ body.dark-mode .jobs-cards-container {
     position: fixed;
     top: 20px;
     right: 20px;
-    width: 50px;
+    width: 5px;
     height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 2px solid white;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -372,7 +369,6 @@ body.dark-mode .jobs-cards-container {
 }
 
 
-}
 
 .filter-row {
     display: flex;
