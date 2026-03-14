@@ -50,8 +50,15 @@ Extract the following fields from the job posting:
    - If on-site: return "City, St" (e.g., "San Francisco, CA")
 4. pay - Return a single number as the LOWER end of the salary range (as a number, not string). 
    Examples: if "$100,000-$150,000" return 100000, if "$60k-$80k" return 60000, if "Competitive" return null
-5. description - A concise 2-3 sentence summary of the role and key responsibilities
+5. description - The FULL, ORIGINAL job description text from the posting. Do NOT summarize or rewrite. Return the exact description as posted.
 6. skills - A comma-separated list of the most important technical skills and keywords required (e.g., "Python, AWS, Docker, Kubernetes")
+7. certificates - Required certifications (e.g., "AWS Solutions Architect, Security+, CISSP"). Return null if none listed.
+8. category - Job category/type. Choose from: Cybersecurity, DevOps, Backend, Frontend, Data Science, Help Desk, Cloud, QA, Mobile, Systems, Other
+9. seniority - Experience level. Choose from: Junior, Mid-level, Senior, Lead, Entry-level
+10. experience_required - Years of experience required as a number (e.g., 5). Return null if not specified.
+11. tech_stack - Main technology stack/frameworks (e.g., "Python, Django, PostgreSQL, AWS")
+12. industry - Industry sector (e.g., Finance, Healthcare, SaaS, E-commerce, Tech)
+13. link - The URL/link to the job posting if provided. Return null if not found.
 
 Return ONLY a valid JSON object with these exact keys. If a field is not found, use null.
 Example response format:
@@ -60,8 +67,15 @@ Example response format:
     "company": "Tech Company Inc.",
     "location": "San Francisco, CA - Hybrid",
     "pay": 150000,
-    "description": "Lead the development of cloud infrastructure. Build scalable systems using Python and AWS.",
-    "skills": "Python, AWS, Docker, Kubernetes, Cloud Architecture"
+    "description": "Full job description text here...",
+    "skills": "Python, AWS, Docker, Kubernetes, Cloud Architecture",
+    "certificates": null,
+    "category": "Backend",
+    "seniority": "Senior",
+    "experience_required": 5,
+    "tech_stack": "Python, FastAPI, PostgreSQL, AWS",
+    "industry": "Tech",
+    "link": null
 }"""
 
 

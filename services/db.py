@@ -1,6 +1,20 @@
 import sqlite3
 import os
 from datetime import datetime
+import logging
+import sys
+
+# Configure logging for security monitoring
+logging.basicConfig(
+    level=logging.WARNING,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('security_log.txt'),  # Local log for testing - remove in production
+        logging.StreamHandler(sys.stdout)  # Also log to console
+    ]
+)
+logger = logging.getLogger(__name__)
+
 
 # Use /home for Azure App Service persistent storage, fallback to local for dev
 if os.path.exists('/home'):
@@ -235,6 +249,13 @@ def init_db():
             posting_date TEXT,
             description TEXT,
             skills TEXT DEFAULT 'unknown',
+            certificates TEXT,
+            category TEXT,
+            seniority TEXT,
+            experience_required INTEGER,
+            tech_stack TEXT,
+            link TEXT,
+            industry TEXT,
             user_id TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -271,7 +292,13 @@ def ensure_columns_exist():
         'created_at': 'TIMESTAMP',
         'updated_at': 'TIMESTAMP',
         'skills': "TEXT DEFAULT 'unknown'",
+        'certificates': 'TEXT',
+        'category': 'TEXT',
+        'seniority': 'TEXT',
+        'experience_required': 'INTEGER',
+        'tech_stack': 'TEXT',
         'link': 'TEXT',
+        'industry': 'TEXT',
         'applied': 'INTEGER DEFAULT 0'
     }
     
@@ -340,7 +367,7 @@ def get_user_jobs(user_id):
     conn.close()
     return jobs
 
-def save_job(title, company, location, pay, description, user_id, skills='unknown', posting_date=None, link=None):
+def save_job(title, company, location, pay, description, user_id, skills='unknown', posting_date=None, link=None, certificates=None, category=None, seniority=None, experience_required=None, tech_stack=None, industry=None):
     """Save a new job to the database."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -355,9 +382,9 @@ def save_job(title, company, location, pay, description, user_id, skills='unknow
     now = datetime.now().isoformat()
     
     cursor.execute('''
-        INSERT INTO jobs (title, company, location, pay, posting_date, description, skills, user_id, link, applied, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
-    ''', (title, company, location, pay, posting_date, description, skills, user_id, link, now, now))
+        INSERT INTO jobs (title, company, location, pay, posting_date, description, skills, user_id, link, certificates, category, seniority, experience_required, tech_stack, industry, applied, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
+    ''', (title, company, location, pay, posting_date, description, skills, user_id, link, certificates, category, seniority, experience_required, tech_stack, industry, now, now))
     
     conn.commit()
     job_id = cursor.lastrowid
@@ -427,6 +454,14 @@ def execute_sql_query(query):
     
     # Security: Only allow SELECT queries to prevent accidental data modification
     if not query_upper.startswith('SELECT'):
+        logger.warning(
+            f'MALICIOUS_QUERY_ATTEMPT: Non-SELECT query attempted - {query_upper.split()[0] if query_upper.split() else "UNKNOWN"}',
+            extra={
+                'query_attempted': query_stripped[:100],
+                'query_length': len(query_stripped),
+                'query_type': query_upper.split()[0] if query_upper.split() else 'UNKNOWN'
+            }
+        )
         return {
             'error': 'Only SELECT queries are allowed in developer mode.'
         }
@@ -435,6 +470,15 @@ def execute_sql_query(query):
     dangerous_keywords = ['DROP', 'DELETE', 'INSERT', 'UPDATE', 'ALTER', 'TRUNCATE', 'CREATE', 'EXEC']
     for keyword in dangerous_keywords:
         if keyword in query_upper:
+            found_keywords = [kw for kw in dangerous_keywords if kw in query_upper]
+            logger.warning(
+                f'MALICIOUS_QUERY_ATTEMPT: Dangerous keyword(s) detected - {", ".join(found_keywords)}',
+                extra={
+                    'dangerous_keywords_found': found_keywords,
+                    'query_attempted': query_stripped[:100],
+                    'query_length': len(query_stripped)
+                }
+            )
             return {
                 'error': f'The keyword "{keyword}" is not allowed in developer mode.'
             }
@@ -477,7 +521,7 @@ def query_jobs_with_filters(filters):
     Example: [{'column': 'title', 'value': 'developer'}, {'column': 'location', 'value': 'remote'}]
     """
     # Allowed columns to prevent SQL injection
-    ALLOWED_COLUMNS = ['id', 'title', 'description', 'skills', 'location', 'pay', 'company', 'posting_date', 'user_id', 'applied']
+    ALLOWED_COLUMNS = ['id', 'title', 'description', 'skills', 'location', 'pay', 'company', 'posting_date', 'user_id', 'applied', 'certificates', 'category', 'seniority', 'experience_required', 'tech_stack', 'link', 'industry']
     
     # Validate filters
     if not filters or len(filters) == 0:
@@ -501,6 +545,15 @@ def query_jobs_with_filters(filters):
             
             # Validate column name
             if column not in ALLOWED_COLUMNS:
+                # Log suspicious activity
+                logger.warning(
+                    f'MALICIOUS_QUERY_ATTEMPT: Invalid column "{column}" - SQL injection attempt?',
+                    extra={
+                        'attempted_column': column,
+                        'allowed_columns': ALLOWED_COLUMNS,
+                        'filters_submitted': str(filters)[:200]
+                    }
+                )
                 conn.close()
                 return {
                     'error': f'Invalid column: {column}'
