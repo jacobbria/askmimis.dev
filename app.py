@@ -1,6 +1,9 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 import os
 import logging
+import csv
+import io
+from datetime import datetime
 from dotenv import load_dotenv
 from services import db, gemini_service, auth, job_parser
 
@@ -501,6 +504,70 @@ def query_jobs():
         return jsonify(result), 200
     except Exception as e:
         logger.error(f"Error querying jobs: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
+
+@app.route('/api/export-jobs', methods=['POST'])
+def export_jobs():
+    """API endpoint for exporting filtered jobs as CSV file."""
+    try:
+        data = request.get_json()
+        filters = data.get('filters', [])
+        
+        if not filters:
+            return jsonify({'error': 'No filters provided'}), 400
+        
+        # Query jobs with filters through db module
+        result = db.query_jobs_with_filters(filters)
+        
+        if 'error' in result:
+            return jsonify(result), 400
+        
+        jobs = result.get('results', [])
+        
+        if not jobs:
+            return jsonify({'error': 'No jobs found matching your filters'}), 400
+        
+        # Define CSV columns
+        csv_columns = [
+            'id', 'title', 'company', 'location', 'pay', 'posting_date',
+            'description', 'skills', 'certificates', 'category', 'seniority',
+            'experience_required', 'tech_stack', 'industry', 'link', 'applied'
+        ]
+        
+        # Create CSV in memory
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=csv_columns)
+        
+        # Write header
+        writer.writeheader()
+        
+        # Write job data
+        for job in jobs:
+            # Filter job dict to only include columns we want
+            row = {col: job.get(col, '') for col in csv_columns}
+            writer.writerow(row)
+        
+        # Get CSV content
+        csv_content = output.getvalue()
+        
+        # Create a BytesIO object from the string
+        output_bytes = io.BytesIO(csv_content.encode('utf-8'))
+        
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'jobs_export_{timestamp}.csv'
+        
+        logger.info(f"Exporting {len(jobs)} jobs to CSV")
+        
+        return send_file(
+            output_bytes,
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name=filename
+        )
+        
+    except Exception as e:
+        logger.error(f"Error exporting jobs: {str(e)}", exc_info=True)
         return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 @app.route('/api/get-all-jobs', methods=['GET'])

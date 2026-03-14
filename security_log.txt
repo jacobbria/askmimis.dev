@@ -171,3 +171,19 @@
 2026-03-14 15:09:31,470 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
 2026-03-14 15:09:31,471 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:09:31] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
 2026-03-14 15:10:00,779 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:10:00] "POST /api/query-jobs HTTP/1.1" 200 -
+2026-03-14 15:21:15,020 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.12.135:8000
+2026-03-14 15:21:15,021 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-14 15:21:16,628 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:16] "GET /jobs/add HTTP/1.1" 200 -
+2026-03-14 15:21:16,697 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:16] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 15:21:19,138 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:19] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 15:21:19,432 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:19] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 15:21:19,496 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:19] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 15:21:19,496 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:19] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 15:21:19,508 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:19] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 15:21:19,772 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:19] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 15:21:19,803 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:19] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 15:21:25,092 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:25] "POST /api/query-jobs HTTP/1.1" 200 -
+2026-03-14 15:21:28,623 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:21:28] "POST /api/export-jobs HTTP/1.1" 200 -

@@ -987,6 +987,7 @@
                 {% set button_onclick = 'clearAllFilters()' %}
                 {% set button_size = 'medium' %}
                 {% include 'components/standard_button.html' %}
+                <button class="pagination-btn" id="exportBtn" style="display: none;" onclick="exportResultsAsCSV()">📥 Export CSV</button>
                 <div class="table-toggle-wrapper" id="tableToggleWrapper" style="display: none;">
                     <input type="checkbox" id="tableToggleCheckbox" class="table-toggle-checkbox" onchange="toggleResultsTable()">
                     <label for="tableToggleCheckbox" class="table-toggle-label"> View Table</label>
@@ -1456,6 +1457,9 @@
                 showQueryError('Please enter at least one search term');
                 return;
             }
+
+            // Store filters globally for export
+            window.currentFilters = filters;
             
             const resultsContainer = document.getElementById('queryResultsContainer');
             resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; font-family: var(--font-system); color: #999;">Searching...</div>';
@@ -1487,12 +1491,14 @@
         function displayQueryResults(results, columns) {
             const resultsContainer = document.getElementById('queryResultsContainer');
             const tableToggleWrapper = document.getElementById('tableToggleWrapper');
+            const exportBtn = document.getElementById('exportBtn');
             const tableToggleCheckbox = document.getElementById('tableToggleCheckbox');
             
             if (results.length === 0) {
                 resultsContainer.innerHTML = '<div class="query-no-results">No results found</div>';
                 resultsContainer.style.display = 'block';
                 tableToggleWrapper.style.display = 'none';
+                exportBtn.style.display = 'none';
                 // Also clear the cards when no results
                 document.getElementById('jobsCardsContainer').innerHTML = '<div style="padding: 40px; text-align: center; color: #999;">No jobs found</div>';
                 document.getElementById('paginationContainer').style.display = 'none';
@@ -1502,8 +1508,9 @@
             // Display filtered results in cards with pagination
             displayJobsInCards(results, 1);
 
-            // Show table toggle and build table
+            // Show table toggle and export button
             tableToggleWrapper.style.display = 'flex';
+            exportBtn.style.display = 'inline-block';
             tableToggleCheckbox.checked = false;
             
             let html = '<div id="resultsTableWrapper" style="display: none;">';
@@ -1548,10 +1555,59 @@
             resultsContainer.style.display = 'block';
         }
 
+        function exportResultsAsCSV() {
+            if (!window.currentFilters || window.currentFilters.length === 0) {
+                alert('Please run a search first before exporting');
+                return;
+            }
+
+            const exportBtn = document.getElementById('exportBtn');
+            exportBtn.disabled = true;
+            exportBtn.textContent = '⏳ Exporting...';
+
+            // Send export request to backend
+            fetch('/api/export-jobs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ filters: window.currentFilters })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Export failed: ' + response.statusText);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create download link
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'jobs_export.csv';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                // Reset button
+                exportBtn.disabled = false;
+                exportBtn.textContent = '📥 Export CSV';
+            })
+            .catch(error => {
+                alert('Export failed: ' + error.message);
+                exportBtn.disabled = false;
+                exportBtn.textContent = '📥 Export CSV';
+            });
+        }
+
         function clearAllFilters() {
             document.getElementById('filtersList').innerHTML = '';
             document.getElementById('queryResultsContainer').innerHTML = '';
             document.getElementById('queryResultsContainer').style.display = 'none';
+            document.getElementById('exportBtn').style.display = 'none';
+            document.getElementById('tableToggleWrapper').style.display = 'none';
+            window.currentFilters = [];
             filterCount = 0;
             currentPage = 1;
             displayJobsInCards(allJobs, 1);
