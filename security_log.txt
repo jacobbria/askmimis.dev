@@ -1,0 +1,173 @@
+2026-03-14 14:38:46,424 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.12.135:8000
+2026-03-14 14:38:46,425 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-14 14:38:52,561 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:38:52] "GET / HTTP/1.1" 200 -
+2026-03-14 14:38:52,579 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:38:52] "GET /static/images/Mimir_Head_LongBeard.png HTTP/1.1" 200 -
+2026-03-14 14:38:52,595 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:38:52] "GET /static/css/global.css HTTP/1.1" 200 -
+2026-03-14 14:38:53,222 - __main__ - WARNING - 404 error: /favicon.ico
+2026-03-14 14:38:53,328 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:38:53] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-14 14:38:56,162 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:38:56] "GET /login HTTP/1.1" 200 -
+2026-03-14 14:38:58,826 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:38:58] "[32mGET /auth/login HTTP/1.1[0m" 302 -
+2026-03-14 14:39:44,996 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:44] "[32mGET /auth/callback?code=1.AW8Bur2rqJcqPkG29gWTosffAUNuBGSNRatDrl6k4pIvIeoIABdvAQ.BQABBAIAAAADAOz_BQD0_0V2b1N0c0FydGlmYWN0cwIAAAAAAP6G1rQnj7XAfnlQyYZD9s-vQyHaNJadISV72SUIE9Q1DqBsd3fcN1UB9mTh-EpSYu4JsN8uIkgKtgFMrD3davmct9ylLI86qSm2buX9KIcvomt8rV9KL36dGS2pLbUZNk-QbCqQEk_moVXDQgsIabggATqx8VuK2-QSWybIV_pioruoYQ02dmMzGGp0RJbcB5GfWtxbmR8e4irp27mURE9NPsZIR4vpztboK04WR_iYya_dwP4cQBDUF_GABi9piMNAkWLLFGP4JJ3HD80QtUY3D1e_30SiL1eKpdQ9xacOzU7VgksF-L_Nuxvs1goIAIz5AboR8GQpfhNHXIblJioALS6kAMGr96V6B2IwbwuBtXhGciLf2x4tyRnjckO_Wwj-2BDIGbO1T1nJjNx5nQKGMM7FCU5gJ9izb7je48PKdUH1y6AvRDKYF7-1bFTMXowQna3f7pmYgrKA3J8_LTrnyS4mCYMFXYV89p2rbkSHMZMVNeHNuuAdim0muCrlYB5_GVfr9_Sn8vzqVJKrOIwSYi3F6aiKtDu8VTF2P3EF0T8EFLK92SO9IkPClgwSqYI-PH8mZUoAVoXhZBnhQJDSnx6phx9V2faGDsTGYDDioCIEu9St-aqHFQUgiTiHrKk5mC563CruNB85d9tBAIeuJjv08eyTZHJ8x1L4Ip16-NUJ6gKRqx88v4BsRZ2UHCZSypyqrEYjUK4920InCWj_jYTvRzGxm0ses4IP9V9vxWAveBQ1NGeS3jyHd7Spicb0C6NqFeeTTORHR8m-8v0uURrXuBTQTXxs5rOMIEqBa4CTbcx86S4CiLKUkVSfmuagKK0GLNpY6_jxyTaVFokutavMeqUoWWWOvvgfCKHiwNIbK9rVEgp8dOGczwf3FKeOXb7AGjzp0gpRzVntUscHpJf4MS7m-wrbjma24XDY_kBm5fAgpwCTRFOyjfxKsm0OBlKjFgIy5g696clBkpdhp3kO9Uewv0F9nyiA_OE8_oHUz0KNdIXeJhW3ir4_icF6DnwHR65abBffxUVEUX1xPeTLwHY6-zPz8Jbh3aLdzm7_6jQywKqJcfXZb7bKQZsj4jMHXCf25l_YKxtM42TlatejSs9s7q85VzRer5KackHAiCNyT5x5YtqT41UjM8kFnAQ8OQN5ol_yZQU93uprIEyAS1S7a7ojva30e0v13vFLmzHWvqqTYmKjd-kTZKTLW3ZHT8MxnpT2mTnvoc9y5STBHtuRwF9fe7StP2QktpLhBBkBRI3vL-diDyAmRVgB0Spinx8FcLUKjYzXe1YRWLEUX7k7sRz0nlehTEaZqYGZroX2b7Derro6OcClKp9Nuht4dfefoOrT8AxAzZgl8TOnpedT9ukqL1unbhEqmn7JbEv0YoNLVOuQSXJVoEfEqs735axwkpyvgb0TCc0JcPH9qK4SCsmkfYWZeMI3O_1yH2qQPbfqEBBoDeVRtCVEmMWxOiirj0rnpbU3G0aWYcDNBdDlG0U2LBYG2bjuIUh8-0wkJb1pwJINOnwJhMB0DL1n1rV5_Gy1VmQdUHQozxooMfL7okhaBLnJn2t43FQ5yQDx3w8umbdMica_-mmAy3knhWmWONJREyarQX3aXDlvNUNLxg5zhdKkvVmZfUoJuFz2rMsszA3IG_jgy6Xvs3M9LUAMK4aeJarRi8wEmYoOsDmja6lTcQsQBsEks8HRR78Q_Qbes5dUzJnxGtvaFwg38BJW2a_1sUaR23-09cGr5cVuXJBjFHqIEe9AOaKa4z1TwfHQADMBJAqqrwVGfhAQHiQnUser7kxjOxXs8cM3E-0ULYzEt1kvsSTJZnwE3yyh5CH5a8Qcw3rl31SzI3OKHnY4MTK69jNbaTNWnqMlJc6BAIJYTSe0VJqmt_EhUJlpl-ArEZ6Xoyba-6KvnnM29YTRkRBy05eyN4mjSz2qRS5PS1h-&session_state=00aaede9-7b91-d1bb-47ab-9f245e948a28 HTTP/1.1[0m" 302 -
+2026-03-14 14:39:45,005 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:45] "GET / HTTP/1.1" 200 -
+2026-03-14 14:39:45,372 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:45] "GET /static/css/global.css HTTP/1.1" 200 -
+2026-03-14 14:39:45,373 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:45] "GET /static/images/Mimir_Head_LongBeard.png HTTP/1.1" 200 -
+2026-03-14 14:39:45,638 - __main__ - WARNING - 404 error: /favicon.ico
+2026-03-14 14:39:45,639 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:45] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-14 14:39:47,427 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:47] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:39:47,619 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:47] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:39:47,775 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:47] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:39:47,777 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:47] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:39:47,790 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:47] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:39:47,946 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:47] "GET /static/images/eye-icon.png HTTP/1.1" 200 -
+2026-03-14 14:39:48,086 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:48] "GET /static/images/thor_cloud.png HTTP/1.1" 200 -
+2026-03-14 14:39:50,670 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:50] "GET /jobs/add HTTP/1.1" 200 -
+2026-03-14 14:39:50,701 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:39:50] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:40:03,024 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:40:03] "POST /jobs/parse HTTP/1.1" 200 -
+2026-03-14 14:40:04,933 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:40:04] "GET /jobs/review HTTP/1.1" 200 -
+2026-03-14 14:40:04,983 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:40:04] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:42:39,837 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.12.135:8000
+2026-03-14 14:42:39,838 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-14 14:42:43,200 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:42:43] "GET / HTTP/1.1" 200 -
+2026-03-14 14:42:43,264 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:42:43] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:42:43,454 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:42:43] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:42:44,732 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:42:44] "GET /jobs/add HTTP/1.1" 200 -
+2026-03-14 14:42:45,017 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:42:45] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:43:00,698 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:00] "POST /jobs/parse HTTP/1.1" 200 -
+2026-03-14 14:43:02,241 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:02] "GET /jobs/review HTTP/1.1" 200 -
+2026-03-14 14:43:02,545 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:02] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:43:28,421 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:28] "GET /jobs/add HTTP/1.1" 200 -
+2026-03-14 14:43:28,502 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:28] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:43:47,781 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:47] "POST /jobs/parse HTTP/1.1" 200 -
+2026-03-14 14:43:49,606 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:49] "GET /jobs/review HTTP/1.1" 200 -
+2026-03-14 14:43:49,631 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:43:49] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:44:59,006 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:44:59] "GET /jobs/add HTTP/1.1" 200 -
+2026-03-14 14:44:59,081 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:44:59] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:45:16,870 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:16] "POST /jobs/parse HTTP/1.1" 200 -
+2026-03-14 14:45:18,696 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:18] "GET /jobs/review HTTP/1.1" 200 -
+2026-03-14 14:45:18,726 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:18] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:45:51,255 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:51] "POST /jobs/save HTTP/1.1" 200 -
+2026-03-14 14:45:52,682 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:52] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:45:52,715 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:52] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:45:52,912 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:52] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:45:53,028 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:53] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:45:53,046 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:53] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:45:53,057 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:53] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 14:45:53,222 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:45:53] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 14:46:34,371 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:46:34] "POST /api/query-jobs HTTP/1.1" 200 -
+2026-03-14 14:48:17,859 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.12.135:8000
+2026-03-14 14:48:17,862 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-14 14:48:25,497 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:25] "GET /jobs/add HTTP/1.1" 200 -
+2026-03-14 14:48:25,529 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:25] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:48:42,194 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:42] "POST /jobs/parse HTTP/1.1" 200 -
+2026-03-14 14:48:44,081 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:44] "GET /jobs/review HTTP/1.1" 200 -
+2026-03-14 14:48:44,129 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:44] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:48:46,471 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:46] "POST /jobs/save HTTP/1.1" 200 -
+2026-03-14 14:48:47,800 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:47] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:48:47,829 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:47] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:48:48,084 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:48] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:48:48,141 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:48] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:48:48,188 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:48] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:48:48,228 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:48] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 14:48:48,406 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:48:48] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 14:49:52,190 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:52] "GET / HTTP/1.1" 200 -
+2026-03-14 14:49:52,264 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:52] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:49:52,434 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:52] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:49:54,333 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:54] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:49:54,650 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:54] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:49:54,681 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:54] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:49:54,682 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:54] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:49:54,727 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:54] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:49:54,972 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:54] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 14:49:54,991 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:49:54] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 14:50:01,380 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:01] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:50:01,486 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:01] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:50:01,640 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:01] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:50:01,725 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:01] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:50:01,726 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:01] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:50:01,763 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:01] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 14:50:01,826 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:01] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 14:50:05,288 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:05] "GET /jobs/add HTTP/1.1" 200 -
+2026-03-14 14:50:05,595 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:05] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:50:16,297 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:16] "POST /jobs/parse HTTP/1.1" 200 -
+2026-03-14 14:50:18,276 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:18] "GET /jobs/review HTTP/1.1" 200 -
+2026-03-14 14:50:18,595 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:18] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:50:20,481 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:20] "POST /jobs/save HTTP/1.1" 200 -
+2026-03-14 14:50:21,727 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:21] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:50:22,042 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:22] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:50:22,089 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:22] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:50:22,091 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:22] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:50:22,120 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:22] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:50:22,367 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:22] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 14:50:22,398 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:22] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 14:50:42,846 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 14:50:42,847 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:42] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:50:42,860 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:50:42] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 14:51:41,263 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 14:51:41,264 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:51:41] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 14:52:25,868 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 14:52:25,868 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:52:25] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 14:54:07,356 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 14:54:07,357 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:54:07] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 14:57:05,625 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.12.135:8000
+2026-03-14 14:57:05,626 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-14 14:57:08,756 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:08] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:57:08,796 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:08] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:57:08,971 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:08] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:57:09,110 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:09] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:57:09,220 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:09] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 14:57:09,220 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:09] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:57:09,279 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:09] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 14:57:15,633 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:15] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:57:15,647 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 14:57:15,682 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:57:15] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 14:59:27,942 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.12.135:8000
+2026-03-14 14:59:27,944 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-14 14:59:28,349 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:28] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 14:59:28,460 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:28] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:59:28,479 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:28] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 14:59:28,797 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:28] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:59:28,859 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:28] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 14:59:28,860 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:28] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 14:59:29,118 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:29] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 14:59:39,701 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:39] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 14:59:39,717 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 14:59:39,731 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 14:59:39] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 15:00:01,231 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 15:00:01,232 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:00:01] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 15:02:22,610 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 15:02:22,610 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:02:22] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 15:07:38,903 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.12.135:8000
+2026-03-14 15:07:38,905 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-14 15:07:42,574 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:42] "GET /jobs HTTP/1.1" 200 -
+2026-03-14 15:07:42,623 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:42] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 15:07:42,704 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:42] "[36mGET /static/images/Mimir_Head_LongBeard.png HTTP/1.1[0m" 304 -
+2026-03-14 15:07:42,936 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:42] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 15:07:43,059 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:43] "[36mGET /static/images/eye-icon.png HTTP/1.1[0m" 304 -
+2026-03-14 15:07:43,060 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:43] "GET /api/get-user-jobs HTTP/1.1" 200 -
+2026-03-14 15:07:43,243 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:43] "[36mGET /static/images/thor_cloud.png HTTP/1.1[0m" 304 -
+2026-03-14 15:07:50,766 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:50] "[36mGET /static/css/global.css HTTP/1.1[0m" 304 -
+2026-03-14 15:07:50,779 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 15:07:50,793 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:07:50] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 15:08:49,092 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 15:08:49,093 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:08:49] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 15:09:31,470 - __main__ - WARNING - 404 error: /.well-known/appspecific/com.chrome.devtools.json
+2026-03-14 15:09:31,471 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:09:31] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-14 15:10:00,779 - werkzeug - INFO - 127.0.0.1 - - [14/Mar/2026 15:10:00] "POST /api/query-jobs HTTP/1.1" 200 -

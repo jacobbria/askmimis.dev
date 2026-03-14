@@ -50,7 +50,7 @@ Extract the following fields from the job posting:
    - If on-site: return "City, St" (e.g., "San Francisco, CA")
 4. pay - Return a single number as the LOWER end of the salary range (as a number, not string). 
    Examples: if "$100,000-$150,000" return 100000, if "$60k-$80k" return 60000, if "Competitive" return null
-5. description - The FULL, ORIGINAL job description text from the posting. Do NOT summarize or rewrite. Return the exact description as posted.
+5. description - A concise 2-3 sentence summary of the role and key responsibilities
 6. skills - A comma-separated list of the most important technical skills and keywords required (e.g., "Python, AWS, Docker, Kubernetes")
 7. certificates - Required certifications (e.g., "AWS Solutions Architect, Security+, CISSP"). Return null if none listed.
 8. category - Job category/type. Choose from: Cybersecurity, DevOps, Backend, Frontend, Data Science, Help Desk, Cloud, QA, Mobile, Systems, Other
@@ -67,7 +67,7 @@ Example response format:
     "company": "Tech Company Inc.",
     "location": "San Francisco, CA - Hybrid",
     "pay": 150000,
-    "description": "Full job description text here...",
+    "description": "Lead the development of cloud infrastructure. Build scalable systems using Python and AWS. 5+ years experience required.",
     "skills": "Python, AWS, Docker, Kubernetes, Cloud Architecture",
     "certificates": null,
     "category": "Backend",

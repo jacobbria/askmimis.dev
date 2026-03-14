@@ -265,7 +265,13 @@ def save_job():
             description=data['description'].strip(),
             skills=data.get('skills', 'unknown').strip() or 'unknown',
             user_id=user_id,
-            link=data.get('link', '').strip() or None
+            link=data.get('link', '').strip() or None,
+            certificates=data.get('certificates', '').strip() or None,
+            category=data.get('category', '').strip() or None,
+            seniority=data.get('seniority', '').strip() or None,
+            experience_required=int(data['experience_required']) if data.get('experience_required') else None,
+            tech_stack=data.get('tech_stack', '').strip() or None,
+            industry=data.get('industry', '').strip() or None
         )
         
         logger.info(f"Job saved successfully with ID: {job_id}")
