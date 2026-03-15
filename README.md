@@ -1,6 +1,7 @@
 # AskMimis.dev - AI Analysis Web App
 
 A lightweight, cost effective Flask web application for analysing job postings. Deployed on Azure container, Nginx reverse proxy, Gunicorn app server, and SQLite Database ([see stack](#-tech-stack)).
+Thanks for checking it out!
 
 ##  Directory
 
