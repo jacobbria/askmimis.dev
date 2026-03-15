@@ -1,6 +1,6 @@
 <h1 align="center">Setup Guide</h1>
 
-<h2 align="center">🖥️ Local Development</h2>
+<h2 align="center"> Local Development</h2>
 
 ### 1. Clone and Setup
 
@@ -38,16 +38,10 @@ gunicorn -w 4 -b 0.0.0.0:8000 wsgi:app
 
 Open http://localhost:8000 in your browser.
 
+# Test in Docker as well
 ---
 
 <h2 align="center">☁️ Azure Deployment</h2>
-
-### Prerequisites
-
-- Azure Subscription (Standard)
-- Ubuntu 24.04 LTS VM (B1s size minimum)
-- Azure Standard Load Balancer (public)
-- NSG inbound rule: Allow TCP 80 from Internet
 
 ### Deployment Steps
 
@@ -59,15 +53,7 @@ During VM creation, add Custom Script Extension:
 Script Location: https://raw.githubusercontent.com/jacobbria/resume_webapp_AZ/main/setup.sh
 ```
 
-#### 2. Manual Setup (if not using Custom Script Extension)
-
-SSH into VM and run:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/jacobbria/resume_webapp_AZ/main/setup.sh | bash
-```
-
-#### 3. Verify Deployment
+#### 2. Verify Deployment
 
 - Get Public IP from Azure Portal
 - Browse to `http://<your-public-ip>`
@@ -102,6 +88,5 @@ gunicorn -w 8 -b 127.0.0.1:8000 wsgi:app
 
 Edit `/etc/nginx/sites-available/resume_webapp` for:
 
-- SSL/TLS configuration
 - Caching policies
 - Rate limiting
