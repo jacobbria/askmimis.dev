@@ -1,6 +1,6 @@
 <h1 align="center">Project Overview</h1>
 
-## Logical Architecture
+## Logical Architecture For Original Web App Deployment
 
 <img width="1263" height="3096" alt="Resume-WebApp-Diagram (1)" src="https://github.com/user-attachments/assets/47eb4ff0-2d60-470b-93f4-d879978c0069" />
 
